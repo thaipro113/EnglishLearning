@@ -1,0 +1,40 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "About Us";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+<link href="~/css/about.css" rel="stylesheet" />
+<div class="about-container">
+    <div class="about-header">
+        <h1>About Us</h1>
+        <p>Chào mừng bạn đến với trang web học tiếng Anh của chúng tôi! Chúng tôi cam kết mang đến những khóa học chất lượng cao, giúp bạn nâng cao kỹ năng ngôn ngữ một cách hiệu quả.</p>
+    </div>
+
+    <div class="about-content">
+        <div class="about-info">
+            <h2>Our Mission</h2>
+            <p>
+                Chúng tôi được thành lập với mục tiêu hỗ trợ người học ở mọi cấp độ, từ Beginner đến Advanced. Với đội ngũ giáo viên giàu kinh nghiệm và nội dung được thiết kế bài bản, chúng tôi giúp bạn tự tin sử dụng tiếng Anh trong công việc và cuộc sống hàng ngày.
+            </p>
+            <p>
+                Các khóa học của chúng tôi bao gồm từ vựng, ngữ pháp, nghe, nói, đọc, viết, phù hợp với các cấp độ A1-C2 theo Khung Tham Chiếu Chung Châu Âu (CEFR).
+            </p>
+        </div>
+
+        <div class="about-contact">
+            <h2>Contact Us</h2>
+            <div class="about-contact-item">
+                <i class="fas fa-envelope"></i><span>Email: @ViewBag.ContactInfo.Email</span>
+            </div>
+            <div class="about-contact-item">
+                <i class="fas fa-phone"></i><span>Phone: @ViewBag.ContactInfo.Phone</span>
+            </div>
+            <div class="about-contact-item">
+                <i class="fas fa-map-marker-alt"></i><span>Address: @ViewBag.ContactInfo.Address</span>
+            </div>
+            <iframe id="map" src="@ViewBag.ContactInfo.MapIframeUrl" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

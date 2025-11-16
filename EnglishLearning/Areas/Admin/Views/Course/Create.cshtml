@@ -1,0 +1,146 @@
+﻿@model EnglishLearning.Models.Course
+@{
+    ViewData["Title"] = "Thêm khóa học mới";
+    Layout = "~/Areas/Admin/Views/Shared/Temp.cshtml";
+}
+
+<style>
+    .custom-title {
+        background: linear-gradient(90deg, #4b6cb7, #182848) !important;
+        color: white !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
+        font-weight: 600;
+    }
+
+    .custom-card {
+        background: white;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+        margin-top: 20px;
+    }
+
+    .custom-form .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 6px;
+    }
+
+    .custom-form .form-control,
+    .custom-form .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #ced4da;
+        padding: 10px 12px;
+        transition: all 0.3s ease;
+    }
+
+        .custom-form .form-control:focus,
+        .custom-form .form-select:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 0.2rem rgba(75, 108, 183, 0.25);
+        }
+
+    .custom-btn-primary {
+        background: linear-gradient(90deg, #007bff, #0056b3) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 24px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-primary:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #0056b3, #003366) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+
+    .custom-btn-secondary {
+        background: linear-gradient(90deg, #6c757d, #495057) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 24px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-secondary:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #495057, #343a40) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center custom-title">
+        <i class="fas fa-plus-circle"></i> @ViewData["Title"]
+    </h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p class="mb-1">@error.ErrorMessage</p>
+            }
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="custom-card">
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post" class="custom-form">
+                @Html.AntiForgeryToken()
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="CourseId" class="form-label">Mã khóa học</label>
+                        <input asp-for="CourseId" class="form-control" placeholder="VD: ENG101" required />
+                        <span asp-validation-for="CourseId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Title" class="form-label">Tên khóa học</label>
+                        <input asp-for="Title" class="form-control" placeholder="Tiếng Anh giao tiếp cơ bản" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label asp-for="SubLevelId" class="form-label">Cấp độ</label>
+                        <select asp-for="SubLevelId" class="form-select" asp-items="ViewBag.SubLevels">
+                            <option value="">-- Chọn cấp độ --</option>
+                        </select>
+                        <span asp-validation-for="SubLevelId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả ngắn gọn về khóa học..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button style="margin:0 5px;" type="submit" class="btn custom-btn-primary">
+                        <i class="fas fa-save"></i> Lưu
+                    </button>
+                    <a asp-action="Index" class="btn custom-btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

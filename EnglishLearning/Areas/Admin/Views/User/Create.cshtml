@@ -1,0 +1,169 @@
+﻿@model EnglishLearning.Models.User
+@{
+    ViewData["Title"] = "Thêm người dùng";
+    Layout = "~/Areas/Admin/Views/Shared/Temp.cshtml";
+}
+
+<style>
+    .custom-title {
+        background: linear-gradient(90deg, #4b6cb7, #182848) !important;
+        color: white !important;
+        padding: 10px !important;
+        border-radius: 5px !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .custom-card {
+        background: white;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+        margin-top: 20px;
+    }
+
+    .custom-form .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .custom-form .form-control,
+    .custom-form .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #ced4da;
+        padding: 10px 12px;
+        transition: all 0.3s ease;
+    }
+
+        .custom-form .form-control:focus,
+        .custom-form .form-select:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 0.2rem rgba(75, 108, 183, 0.25);
+        }
+
+    .custom-btn-success {
+        background: linear-gradient(90deg, #28a745, #1e7e34) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-success:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #1e7e34, #155724) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+
+    .custom-btn-secondary {
+        background: linear-gradient(90deg, #6c757d, #495057) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-secondary:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #495057, #343a40) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center custom-title">
+        <i class="fas fa-user-plus"></i> Thêm người dùng mới
+    </h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="custom-card">
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post" class="custom-form">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Username" class="form-label">Tên đăng nhập</label>
+                        <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PasswordHash" class="form-label">Mật khẩu</label>
+                        <input asp-for="PasswordHash" class="form-control" type="password" placeholder="Nhập mật khẩu" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FullName" class="form-label">Họ và tên</label>
+                        <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="email@example.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="0901234567" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Role" class="form-label">Vai trò</label>
+                        <select asp-for="Role" class="form-select">
+                            <option value="Student">Học viên</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Teacher">Giáo viên</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Level" class="form-label">Trình độ</label>
+                        <input asp-for="Level" class="form-control" placeholder="Beginner, Intermediate..." />
+                        <span asp-validation-for="Level" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Purpose" class="form-label">Mục đích học</label>
+                        <input asp-for="Purpose" class="form-control" placeholder="Học TOEIC, giao tiếp..." />
+                        <span asp-validation-for="Purpose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-grid d-md-flex justify-content-end gap-2">
+                    <button style="margin:0 5px" type="submit" class="btn custom-btn-success">
+                        <i class="fas fa-plus-circle"></i> Thêm người dùng
+                    </button>
+                    <a asp-action="Index" class="btn custom-btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- FontAwesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />

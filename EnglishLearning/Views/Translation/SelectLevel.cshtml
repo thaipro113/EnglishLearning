@@ -1,0 +1,289 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Chọn cấp độ & chủ đề";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeIn">
+        <div class="card-header bg-gradient text-white text-center py-4" style="background: linear-gradient(135deg, #6b48ff, #00ddeb); border-radius: 15px 15px 0 0;">
+            <h2 class="mb-0">Bắt đầu luyện dịch</h2>
+        </div>
+        <div class="card-body p-5">
+            <form method="post" asp-action="StartPractice" asp-controller="Translation" class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-primary"><i class="bi bi-bar-chart-fill me-2"></i>Chọn cấp độ</label>
+                    <div class="custom-dropdown">
+                        <input type="text" class="form-control form-control-lg rounded-pill shadow-sm dropdown-toggle" id="levelInput" placeholder="Chọn cấp độ..." readonly>
+                        <ul class="dropdown-menu" aria-labelledby="levelInput">
+                            <li><button class="dropdown-item" type="button" data-value="A1">A1 - Beginner</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="A2">A2 - Elementary</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="B1">B1 - Intermediate</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="B2">B2 - Upper Intermediate</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="C1">C1 - Advanced</button></li>
+                        </ul>
+                        <input type="hidden" name="Level" id="levelHidden">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-primary"><i class="bi bi-tags-fill me-2"></i>Chọn chủ đề</label>
+                    <div class="custom-dropdown">
+                        <input type="text" class="form-control form-control-lg rounded-pill shadow-sm dropdown-toggle" id="topicInput" placeholder="Chọn chủ đề..." readonly>
+                        <ul class="dropdown-menu" aria-labelledby="topicInput">
+                            <li><button class="dropdown-item" type="button" data-value="Food">Ẩm thực</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Travel">Du lịch</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Technology">Công nghệ</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Education">Giáo dục</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Environment">Môi trường</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Health">Sức khỏe</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Sports">Thể thao</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Culture">Văn hóa</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Business">Kinh doanh</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Science">Khoa học</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Entertainment">Giải trí</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Fashion">Thời trang</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="History">Lịch sử</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Art">Nghệ thuật</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Nature">Thiên nhiên</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Politics">Chính trị</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Music">Nhạc</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Movies">Phim ảnh</button></li>
+                            <li><button class="dropdown-item" type="button" data-value="Family">Gia đình</button></li>
+                        </ul>
+                        <input type="hidden" name="Topic" id="topicHidden">
+                    </div>
+                </div>
+                <div class="col-12 text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 me-3 " style="margin:5px;>
+                        <i class="bi bi-rocket-takeoff-fill me-2"></i>Bắt đầu luyện dịch
+                    </button>
+                    <a asp-action="History" asp-controller="Translation" class="btn btn-primary btn-lg rounded-pill px-5 py-3" style="margin:5px;">
+                        <i class="bi bi-clock-history me-2"></i>Xem lịch sử
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Loading -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-5">
+            <h4 class="mb-3">⏳ Đang tạo đoạn văn...</h4>
+            <div class="progress mb-3" style="height: 25px;">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar" style="width: 0%">
+                    0%
+                </div>
+            </div>
+            <p>Vui lòng chờ trong giây lát...</p>
+        </div>
+    </div>
+</div>
+<style>
+    body {
+        background: linear-gradient(135deg, #f0f4ff, #ffffff);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .card {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, #6b48ff, #00ddeb);
+    }
+
+    .form-label {
+        font-size: 1.1rem;
+        color: #4a00e0;
+        margin-bottom: 0.5rem;
+    }
+
+    .custom-dropdown {
+        position: relative;
+    }
+
+        .custom-dropdown .dropdown-toggle {
+            background-color: #f8f9fa;
+            border: 2px solid #e0e7ff;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .custom-dropdown .dropdown-toggle:focus {
+                border-color: #6b48ff;
+                box-shadow: 0 0 0 0.25rem rgba(107, 72, 255, 0.25);
+            }
+
+        .custom-dropdown .dropdown-menu {
+            display: none; /* Ẩn mặc định */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #e0e7ff;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 0;
+            margin: 0;
+        }
+
+            .custom-dropdown .dropdown-menu.show {
+                display: block; /* Hiển thị khi có class 'show' */
+            }
+
+        .custom-dropdown .dropdown-item {
+            padding: 0.5rem 1rem;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+            .custom-dropdown .dropdown-item:hover {
+                background-color: #f0f4ff;
+            }
+
+    .btn-primary {
+        background: rgb(40, 120, 235);
+        border: none;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(107, 72, 255, 0.4);
+        }
+
+    .btn-outline-info {
+        border-color: #00ddeb;
+        color: #00ddeb;
+        font-weight: 600;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #00ddeb;
+            color: #fff;
+            transform: scale(1.05);
+        }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelector("form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const level = document.getElementById("levelHidden").value.trim();
+            const topic = document.getElementById("topicHidden").value.trim();
+
+            // ⚠️ Kiểm tra nếu người dùng chưa chọn cấp độ hoặc chủ đề
+            if (!level && !topic) {
+                alert("Vui lòng chọn cấp độ và chủ đề trước khi bắt đầu luyện dịch!");
+                return;
+            }
+            if (!level) {
+                alert("Vui lòng chọn cấp độ trước khi bắt đầu luyện dịch!");
+                return;
+            }
+            if (!topic) {
+                alert("Vui lòng chọn chủ đề trước khi bắt đầu luyện dịch!");
+                return;
+            }
+
+            // ✅ Hiện modal loading
+            var modal = new bootstrap.Modal(document.getElementById('loadingModal'));
+            modal.show();
+
+            // Giả lập tiến trình loading
+            let progress = 0;
+            const bar = document.getElementById("progressBar");
+            const interval = setInterval(() => {
+                if (progress < 90) {
+                    progress += 5;
+                    bar.style.width = progress + "%";
+                    bar.innerText = progress + "%";
+                }
+            }, 500);
+
+            // ✅ Gửi dữ liệu lên server
+            const formData = new FormData(this);
+            const res = await fetch("/Translation/StartPractice", {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+
+            clearInterval(interval);
+
+            if (data.success) {
+                bar.style.width = "100%";
+                bar.innerText = "100%";
+                setTimeout(() => {
+                    window.location.href = data.redirectUrl;
+                }, 1000);
+            } else {
+                bar.classList.remove("bg-success");
+                bar.classList.add("bg-danger");
+                bar.style.width = "100%";
+                bar.innerText = "Lỗi!";
+                alert(data.message || "Có lỗi xảy ra khi tạo đoạn văn.");
+            }
+        });
+
+        // Dropdown chọn cấp độ/chủ đề
+        document.querySelectorAll('.custom-dropdown .dropdown-toggle').forEach(input => {
+            input.addEventListener('click', function () {
+                const dropdownMenu = this.nextElementSibling;
+                dropdownMenu.classList.toggle('show');
+            });
+        });
+
+        document.querySelectorAll('.custom-dropdown .dropdown-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const dropdown = this.closest('.custom-dropdown');
+                const input = dropdown.querySelector('.dropdown-toggle');
+                const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+                input.value = this.textContent;
+                hiddenInput.value = this.getAttribute('data-value');
+                this.closest('.dropdown-menu').classList.remove('show');
+            });
+        });
+
+        // Đóng dropdown khi click ra ngoài
+        document.addEventListener('click', function (event) {
+            document.querySelectorAll('.custom-dropdown .dropdown-menu').forEach(menu => {
+                if (!menu.closest('.custom-dropdown').contains(event.target)) {
+                    menu.classList.remove('show');
+                }
+            });
+        });
+
+        // Đặt giá trị mặc định khi tải trang
+        document.addEventListener('DOMContentLoaded', function () {
+            const levelInput = document.getElementById('levelInput');
+            const topicInput = document.getElementById('topicInput');
+            if (!levelInput.value) levelInput.value = 'Chọn cấp độ...';
+            if (!topicInput.value) topicInput.value = 'Chọn chủ đề...';
+        });
+    </script>
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">

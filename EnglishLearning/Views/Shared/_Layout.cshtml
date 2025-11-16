@@ -1,0 +1,681 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>@ViewData["Title"] TLEnglish</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+    <link rel="shortcut icon" href="~/img/english-icon-png-9.jpg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/css/style.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #f0f7ff, #e0f2f7);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-brand h1 {
+            font-family: 'Jost', sans-serif;
+            font-weight: 700;
+            color: #1e3a8a;
+            transition: color 0.3s ease;
+        }
+
+            .navbar-brand h1:hover {
+                color: #3b82f6;
+            }
+
+        .nav-link {
+            font-weight: 600;
+            color: #1e40af;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+            .nav-link:hover, .nav-link.active {
+                color: #3b82f6;
+                transform: translateY(-2px);
+            }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #60a5fa);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(45deg, #1e40af, #3b82f6);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            }
+
+        .jumbotron h1 {
+            font-family: 'Jost', sans-serif;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .footer {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 3rem 0;
+        }
+
+            .footer h3 {
+                color: #ffffff;
+                font-family: 'Jost', sans-serif;
+                font-weight: 600;
+            }
+
+            .footer a {
+                color: #94a3b8;
+                transition: color 0.3s ease;
+            }
+
+                .footer a:hover {
+                    color: #60a5fa;
+                    text-decoration: none;
+                }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+            .back-to-top:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+        /* Style cho avatar và dropdown */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+            .user-avatar:hover {
+                transform: scale(1.1);
+            }
+
+        .dropdown-menu {
+            min-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: none; /* Ẩn mặc định */
+        }
+
+        .dropdown-item {
+            font-weight: 600;
+            color: #1e40af;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+            .dropdown-item:hover {
+                color: #3b82f6;
+                background-color: #f0f7ff;
+            }
+    </style>
+</head>
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="index.html" class="navbar-brand ml-lg-3">
+                <a asp-controller="Home" asp-action="Index" style="text-decoration:none">
+                    <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>TLEnglish</h1>
+                </a>
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    <a href="index.html" class="nav-item nav-link active">Home</a>
+                    <a asp-controller="About" asp-action="Index" class="nav-item nav-link">About</a>
+                    <a asp-controller="Course" asp-action="Index" class="nav-item nav-link">Courses</a>
+                    <a asp-controller="Chatbot" asp-action="Index" class="nav-item nav-link">Assistant AI</a>
+                    <a asp-controller="Dictionary" asp-action="Index" class="nav-item nav-link">Dictionary</a>
+                    <a asp-controller="Grammar" asp-action="Check" class="nav-item nav-link">Grammar Check</a>
+                    <a asp-controller="Translation" asp-action="SelectLevel" class="nav-item nav-link">Translation Practice </a>
+                </div>
+                @using Microsoft.AspNetCore.Http
+                @inject IHttpContextAccessor HttpContextAccessor
+                <div class="d-flex align-items-center">
+                    @if (HttpContextAccessor.HttpContext.Session.GetString("Username") != null)
+                    {
+                        var avatarFileName = HttpContextAccessor.HttpContext.Session.GetString("ImageUrl");
+                        var username = HttpContextAccessor.HttpContext.Session.GetString("FullName");
+                        var avatarUrl = string.IsNullOrEmpty(avatarFileName) ? "/uploads/default-avatar.png" : $"/uploads/{avatarFileName}";
+                        <div class="dropdown">
+                            <img src="@avatarUrl"
+                                 alt="Avatar"
+                                 class="user-avatar rounded-circle"
+                                 id="userDropdown"
+                                 style="width: 40px; height: 40px; object-fit: cover;"
+                                 onclick="toggleDropdown(event)">
+                            <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu">
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Profile">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Progress">Tiến độ</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                        <span class="text-dark ml-2">Xin chào, <b>@username</b></span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Đăng nhập</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+    <main>
+        @RenderBody() <!-- 🔥 PHẢI CÓ để render nội dung từ các View -->
+    </main>
+    <!-- Header Start -->
+    <div class="jumbotron jumbotron-fluid position-relative overlay-bottom" style="margin-bottom: 90px;">
+        <div class="container text-center my-5 py-5">
+            <h1 class="text-white mt-4 mb-4">English Learning Free</h1>
+            <h1 class="text-white display-1 mb-5">Education Courses</h1>
+        </div>
+    </div>
+    <!-- Header End -->
+    <!-- About Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute w-100 h-100" src="~/img/img1.jpg" style="object-fit: cover;">
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="section-title position-relative mb-4">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Về Chúng Tôi</h6>
+                        <h1 class="display-4">Lựa Chọn Hàng Đầu Cho Học Tiếng Anh Trực Tuyến</h1>
+                    </div>
+                    <p>Tạm thời là một nơi học tiếng Anh trực tuyến với các khóa học chất lượng cao. Chúng tôi cung cấp phương pháp học hiệu quả, giúp bạn cải thiện kỹ năng nghe, nói, đọc, viết một cách dễ dàng. Hãy tham gia cùng chúng tôi để trải nghiệm hành trình học tiếng Anh thú vị!</p>
+                    <div class="row pt-3 mx-0">
+                        <div class="col-3 px-0">
+                            <div class="bg-success text-center p-4">
+                                <h1 class="text-white" data-toggle="counter-up">50</h1>
+                                <h6 class="text-uppercase text-white">Chủ đề<span class="d-block">Học Tập</span></h6>
+                            </div>
+                        </div>
+                        <div class="col-3 px-0">
+                            <div class="bg-primary text-center p-4">
+                                <h1 class="text-white" data-toggle="counter-up">100</h1>
+                                <h6 class="text-uppercase text-white">Bài học<span class="d-block">Trực Tuyến</span></h6>
+                            </div>
+                        </div>
+                        <div class="col-3 px-0">
+                            <div class="bg-secondary text-center p-4">
+                                <h1 class="text-white" data-toggle="counter-up">20</h1>
+                                <h6 class="text-uppercase text-white">Đa dạng<span class="d-block">Khóa học</span></h6>
+                            </div>
+                        </div>
+                        <div class="col-3 px-0">
+                            <div class="bg-warning text-center p-4">
+                                <h1 class="text-white" data-toggle="counter-up">500</h1>
+                                <h6 class="text-uppercase text-white">Học viên<span class="d-block">Hài Lòng</span></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+    <!-- Feature Start -->
+    <div class="container-fluid bg-image" style="margin: 90px 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 my-5 pt-5 pb-lg-5">
+                    <div class="section-title position-relative mb-4">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Tại Sao Chọn Chúng Tôi?</h6>
+                        <h1 class="display-4">Tại Sao Nên Bắt Đầu Học Tiếng Anh Với Chúng Tôi?</h1>
+                    </div>
+                    <p class="mb-4 pb-2">Chúng tôi cung cấp môi trường học tập tiếng Anh chuyên nghiệp với các bài học đa dạng. Hãy khám phá cách chúng tôi giúp bạn cải thiện kỹ năng ngôn ngữ một cách hiệu quả nhất!</p>
+                    <div class="d-flex mb-3">
+                        <div class="btn-icon bg-primary mr-4">
+                            <i class="fa fa-2x fa-graduation-cap text-white"></i>
+                        </div>
+                        <div class="mt-n1">
+                            <h4>Phù hợp với tất cả mọi người</h4>
+                            <p>Cung cấp các khóa học phù hợp với các cấp độ mà mọi người đang cần đến để học tập.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <div class="btn-icon bg-secondary mr-4">
+                            <i class="fa fa-2x fa-certificate text-white"></i>
+                        </div>
+                        <div class="mt-n1">
+                            <h4>Chứng Chỉ Quốc Tế</h4>
+                            <p>Cung cấp các khóa học được công nhận giúp bạn đạt chứng chỉ tiếng Anh quốc tế.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="btn-icon bg-warning mr-4">
+                            <i class="fa fa-2x fa-book-reader text-white"></i>
+                        </div>
+                        <div class="mt-n1">
+                            <h4>Học Trực Tuyến</h4>
+                            <p>Học tiếng Anh mọi lúc, mọi nơi với các bài học trực tuyến tiện lợi.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5" style="min-height: 500px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute w-100 h-100" src="~/img/feature.jpg" style="object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Feature Start -->
+    <!-- Courses Start -->
+    <div class="container-fluid px-0 py-5">
+        <div class="row mx-0 justify-content-center pt-5">
+            <div class="col-lg-6">
+                <div class="section-title text-center position-relative mb-4">
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Khóa Học Của Chúng Tôi</h6>
+                    <h1 class="display-4">Khám Phá Các Khóa Học Tiếng Anh Mới Nhất</h1>
+                </div>
+            </div>
+        </div>
+        <div class="owl-carousel courses-carousel">
+            <div class="courses-item position-relative">
+                <img class="img-fluid" src="~/img/h1.webp" alt="">
+                <div class="courses-text">
+                    <h4 class="text-center text-white px-3">Khóa Học Tiếng Anh Cơ Bản</h4>
+                    <div class="border-top w-100 mt-3">
+                        <div class="d-flex justify-content-between p-4">
+                            <span class="text-white"><i class="fa fa-user mr-2"></i>Nguyễn Văn A</span>
+                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                        </div>
+                    </div>
+                    <div class="w-100 bg-white text-center p-4">
+                        <a class="btn btn-primary" href="detail.html">Chi Tiết Khóa Học</a>
+                    </div>
+                </div>
+            </div>
+            <div class="courses-item position-relative">
+                <img class="img-fluid" src="~/img/courses-2.jpg" alt="">
+                <div class="courses-text">
+                    <h4 class="text-center text-white px-3">Khóa Học Tiếng Anh Phát Âm</h4>
+                    <div class="border-top w-100 mt-3">
+                        <div class="d-flex justify-content-between p-4">
+                            <span class="text-white"><i class="fa fa-user mr-2"></i>Trần Thị B</span>
+                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                        </div>
+                    </div>
+                    <div class="w-100 bg-white text-center p-4">
+                        <a class="btn btn-primary" href="detail.html">Chi Tiết Khóa Học</a>
+                    </div>
+                </div>
+            </div>
+            <div class="courses-item position-relative">
+                <img class="img-fluid" src="~/img/courses-3.jpg" alt="">
+                <div class="courses-text">
+                    <h4 class="text-center text-white px-3">Khóa Học IELTS</h4>
+                    <div class="border-top w-100 mt-3">
+                        <div class="d-flex justify-content-between p-4">
+                            <span class="text-white"><i class="fa fa-user mr-2"></i>Lê Văn C</span>
+                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                        </div>
+                    </div>
+                    <div class="w-100 bg-white text-center p-4">
+                        <a class="btn btn-primary" href="detail.html">Chi Tiết Khóa Học</a>
+                    </div>
+                </div>
+            </div>
+            <div class="courses-item position-relative">
+                <img class="img-fluid" src="~/img/courses-4.jpg" alt="">
+                <div class="courses-text">
+                    <h4 class="text-center text-white px-3">Khóa Học Tiếng Anh Ngữ Pháp</h4>
+                    <div class="border-top w-100 mt-3">
+                        <div class="d-flex justify-content-between p-4">
+                            <span class="text-white"><i class="fa fa-user mr-2"></i>Phạm Thị D</span>
+                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                        </div>
+                    </div>
+                    <div class="w-100 bg-white text-center p-4">
+
+                        <a asp-controller="Course" asp-action="Details" asp-route-id="gmfb01" class="btn btn-primary">Chi Tiết Khóa Học</a>
+                    </div>
+                </div>
+            </div>
+            <div class="courses-item position-relative">
+                <img class="img-fluid" src="~/img/h2.webp" alt="">
+                <div class="courses-text">
+                    <h4 class="text-center text-white px-3">Khóa Học Tiếng Anh TOEIC</h4>
+                    <div class="border-top w-100 mt-3">
+                        <div class="d-flex justify-content-between p-4">
+                            <span class="text-white"><i class="fa fa-user mr-2"></i>Hoàng Văn E</span>
+                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                        </div>
+                    </div>
+                    <div class="w-100 bg-white text-center p-4">
+                        <a class="btn btn-primary" href="detail.html">Chi Tiết Khóa Học</a>
+                    </div>
+                </div>
+            </div>
+            <div class="courses-item position-relative">
+                <img class="img-fluid" src="~/img/courses-6.jpg" alt="">
+                <div class="courses-text">
+                    <h4 class="text-center text-white px-3">Khóa Học Tiếng Anh Từ Vựng</h4>
+                    <div class="border-top w-100 mt-3">
+                        <div class="d-flex justify-content-between p-4">
+                            <span class="text-white"><i class="fa fa-user mr-2"></i>Ngô Thị F</span>
+                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                        </div>
+                    </div>
+                    <div class="w-100 bg-white text-center p-4">
+                        <a class="btn btn-primary" href="detail.html">Chi Tiết Khóa Học</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Courses End -->
+    <!-- Testimonial Start -->
+    <div class="container-fluid bg-image py-5" style="margin: 90px 0;">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-5 mb-lg-0">
+                    <div class="section-title position-relative mb-4">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Đánh Giá</h6>
+                        <h1 class="display-4">Nhận Xét Từ Học Viên Của Chúng Tôi</h1>
+                    </div>
+                    <p class="m-0">Học tiếng Anh tại đây đã giúp tôi cải thiện kỹ năng giao tiếp đáng kể. Giáo viên rất tận tâm và phương pháp giảng dạy rất hiệu quả!</p>
+                </div>
+                <div class="col-lg-7">
+                    <div class="owl-carousel testimonial-carousel">
+                        <div class="bg-white p-5">
+                            <i class="fa fa-3x fa-quote-left text-primary mb-4"></i>
+                            <p>Học tiếng Anh tại TLEnglish thực sự tuyệt vời. Tôi đã tự tin hơn trong giao tiếp chỉ sau vài tháng. Cảm ơn đội ngũ giáo viên!</p>
+                            <div class="d-flex flex-shrink-0 align-items-center mt-4">
+                                <img class="img-fluid mr-4" src="~/img/testimonial-2.jpg" alt="">
+                                <div>
+                                    <h5>Nguyễn Văn A</h5>
+                                    <span>Học viên Tiếng Anh Giao Tiếp</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5">
+                            <i class="fa fa-3x fa-quote-left text-primary mb-4"></i>
+                            <p>Khóa học IELTS tại đây rất chi tiết và giúp tôi đạt band 7.0. Rất hài lòng với dịch vụ!</p>
+                            <div class="d-flex flex-shrink-0 align-items-center mt-4">
+                                <img class="img-fluid mr-4" src="~/img/testimonial-1.jpg" alt="">
+                                <div>
+                                    <h5>Trần Thị B</h5>
+                                    <span>Học viên IELTS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial Start -->
+    <!-- Contact Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-5 mb-lg-0">
+                    <div class="bg-light d-flex flex-column justify-content-center px-5" style="height: 450px;">
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="btn-icon bg-primary mr-4">
+                                <i class="fa fa-2x fa-map-marker-alt text-white"></i>
+                            </div>
+                            <div class="mt-n1">
+                                <h4>Địa Chỉ Của Chúng Tôi</h4>
+                                <p class="m-0">123 Đường ABC, TP. Hồ Chí Minh, Việt Nam</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="btn-icon bg-secondary mr-4">
+                                <i class="fa fa-2x fa-phone-alt text-white"></i>
+                            </div>
+                            <div class="mt-n1">
+                                <h4>Liên Hệ</h4>
+                                <p class="m-0">+84 123 456 789</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="btn-icon bg-warning mr-4">
+                                <i class="fa fa-2x fa-envelope text-white"></i>
+                            </div>
+                            <div class="mt-n1">
+                                <h4>Email</h4>
+                                <p class="m-0">info@tlenglish.vn</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="section-title position-relative mb-4">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Cần Giúp Đỡ?</h6>
+                        <h1 class="display-4">Gửi Tin Nhắn Cho Chúng Tôi</h1>
+                    </div>
+                    <div class="contact-form">
+                        <form>
+                            <div class="row">
+                                <div class="col-6 form-group">
+                                    <input type="text" class="form-control border-top-0 border-right-0 border-left-0 p-0" placeholder="Họ và Tên" required="required">
+                                </div>
+                                <div class="col-6 form-group">
+                                    <input type="email" class="form-control border-top-0 border-right-0 border-left-0 p-0" placeholder="Email Của Bạn" required="required">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control border-top-0 border-right-0 border-left-0 p-0" placeholder="Tiêu Đề" required="required">
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control border-top-0 border-right-0 border-left-0 p-0" rows="5" placeholder="Nội Dung Tin Nhắn" required="required"></textarea>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary py-3 px-5" type="submit">Gửi Tin Nhắn</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Contact End -->
+    <!-- Footer Start -->
+    <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
+        <div class="container mt-5 pt-5">
+            <div class="row">
+                <div class="col-md-6 mb-5">
+                    <a href="index.html" class="navbar-brand">
+                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>TLEnglish</h1>
+                    </a>
+                    <p class="m-0">TLEnglish là nơi cung cấp các khóa học tiếng Anh trực tuyến chất lượng cao. Chúng tôi cam kết giúp bạn học tiếng Anh dễ dàng và hiệu quả nhất!</p>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <h3 class="text-white mb-4">Đăng Ký Bản Tin</h3>
+                    <div class="w-100">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Địa Chỉ Email Của Bạn">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary px-4">Đăng Ký</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Liên Hệ Với Chúng Tôi</h3>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>123 Đường ABC, TP. Đà Nẵng, Việt Nam</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>+84 123 456 789</p>
+                    <p><i class="fa fa-envelope mr-2"></i>info@tlenglish.vn</p>
+                    <div class="d-flex justify-content-start mt-4">
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-linkedin-in"></i></a>
+                        <a class="text-white" href="#"><i class="fab fa-2x fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Khóa Học Của Chúng Tôi</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tiếng Anh Cơ Bản</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tiếng Anh Giao Tiếp</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>IELTS</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tiếng Anh Thương Mại</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>TOEIC</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Liên Kết Nhanh</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Chính Sách Bảo Mật</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Điều Khoản Sử Dụng</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Câu Hỏi Thường Gặp</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Hỗ Trợ</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Liên Hệ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <!-- Footer End -->
+    <!-- Back to Top -->
+    <a href="#" style="
+    background-color: #3b82f6;
+    color: white;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    border-radius: 50%; /* Thêm để tạo hình tròn */
+    text-decoration: none; /* Loại bỏ gạch chân */
+    display: flex; /* Sử dụng flex để căn giữa icon */
+    align-items: center;
+    justify-content: center;
+    width: 50px; /* Định kích thước cố định */
+    height: 50px; /* Định kích thước cố định */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Hiệu ứng mượt mà */
+    z-index: 9999; /* Đảm bảo hiển thị trên cùng */
+" onmouseover="this.style.opacity='1'; this.style.transform='scale(1.1)'; this.style.backgroundColor='#1e40af';" onmouseout="this.style.opacity='0.9'; this.style.transform='scale(1)'; this.style.backgroundColor='#3b82f6';">
+        <i class="fa fa-angle-double-up"></i>
+    </a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/easing/easing.min.js"></script>
+    <script src="~/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/lib/counterup/counterup.min.js"></script>
+    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- Custom JavaScript cho dropdown -->
+    <script>
+        function toggleDropdown(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var dropdownMenu = document.getElementById("userDropdownMenu");
+            if (dropdownMenu.style.display === "block") {
+                dropdownMenu.style.display = "none";
+            } else {
+                dropdownMenu.style.display = "block";
+            }
+        }
+
+        // Ẩn dropdown khi click ra ngoài
+        document.addEventListener("click", function (event) {
+            var dropdownMenu = document.getElementById("userDropdownMenu");
+            var avatar = document.getElementById("userDropdown");
+            if (!avatar.contains(event.target)) {
+                dropdownMenu.style.display = "none";
+            }
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

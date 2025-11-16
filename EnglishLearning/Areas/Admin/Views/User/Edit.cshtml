@@ -1,0 +1,153 @@
+﻿@model EnglishLearning.Models.User
+@{
+    ViewData["Title"] = "Chỉnh sửa người dùng";
+    Layout = "~/Areas/Admin/Views/Shared/Temp.cshtml";
+}
+
+<!-- DÙNG CÙNG CSS VỚI TRANG KHÓA HỌC -->
+<style>
+    .custom-title {
+        background: linear-gradient(90deg, #4b6cb7, #182848) !important;
+        color: white !important;
+        padding: 10px !important;
+        border-radius: 5px !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .custom-card {
+        background: white;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+        margin-top: 20px;
+    }
+
+    .custom-form .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .custom-form .form-control {
+        border-radius: 8px;
+        border: 1.5px solid #ced4da;
+        padding: 10px 12px;
+        transition: all 0.3s ease;
+    }
+
+        .custom-form .form-control:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 0.2rem rgba(75, 108, 183, 0.25);
+        }
+
+    .custom-btn-warning {
+        background: linear-gradient(90deg, #ffc107, #e0a800) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-warning:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #e0a800, #c69500) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+
+    .custom-btn-secondary {
+        background: linear-gradient(90deg, #6c757d, #495057) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-secondary:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #495057, #343a40) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center custom-title">
+        <i class="fas fa-user-edit"></i> Chỉnh sửa người dùng
+    </h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="custom-card">
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post" class="custom-form">
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FullName" class="form-label">Họ và tên</label>
+                        <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="email@example.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="0901234567" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Level" class="form-label"></label>
+                        <input asp-for="Level" class="form-control" placeholder="VD: Beginner, Intermediate..." />
+                        <span asp-validation-for="Level" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Occupation" class="form-label"></label>
+                        <input asp-for="Occupation" class="form-control" placeholder="VD: Sinh viên, Nhân viên..." />
+                        <span asp-validation-for="Occupation" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Purpose" class="form-label"></label>
+                    <input asp-for="Purpose" class="form-control" placeholder="Mục đích học tiếng Anh..." />
+                    <span asp-validation-for="Purpose" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid d-md-flex justify-content-end gap-2">
+                    <button style="margin:0 5px;" type="submit" class="btn custom-btn-warning">
+                        <i class="fas fa-save"></i> Cập nhật
+                    </button>
+                    <a asp-action="Index" class="btn custom-btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- FontAwesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />

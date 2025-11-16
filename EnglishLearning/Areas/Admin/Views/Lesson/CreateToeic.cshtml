@@ -1,0 +1,431 @@
+﻿@model EnglishLearning.Models.Lesson
+@{
+    ViewData["Title"] = "Thêm đề thi TOEIC";
+    Layout = "~/Areas/Admin/Views/Shared/Temp.cshtml";
+}
+
+<style>
+    .custom-title {
+        background: linear-gradient(90deg, #4b6cb7, #182848) !important;
+        color: white !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
+        font-weight: 600;
+    }
+
+    .custom-card {
+        background: white;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+        margin-top: 20px;
+    }
+
+    .custom-form .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 6px;
+    }
+
+    .custom-form .form-control,
+    .custom-form .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #ced4da;
+        padding: 10px 12px;
+        transition: all 0.3s ease;
+    }
+
+        .custom-form .form-control:focus,
+        .custom-form .form-select:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 0.2rem rgba(75, 108, 183, 0.25);
+        }
+
+    .custom-btn-success {
+        background: linear-gradient(90deg, #28a745, #1e7e34) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 24px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-success:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #1e7e34, #155724) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+
+    .custom-btn-secondary {
+        background: linear-gradient(90deg, #6c757d, #495057) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 24px !important;
+        font-weight: 600;
+    }
+
+        .custom-btn-secondary:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #495057, #343a40) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+
+    .part-title {
+        background: #e9ecef;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        color: #495057;
+        margin: 20px 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .quiz-item {
+        background: #f8f9fa;
+        border: 1.5px solid #dee2e6 !important;
+        border-radius: 10px !important;
+        padding: 16px;
+        margin-bottom: 16px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+        .quiz-item:hover {
+            border-color: #4b6cb7;
+            box-shadow: 0 2px 8px rgba(75, 108, 183, 0.15);
+        }
+
+    .current-file {
+        font-size: 0.875rem;
+        color: #007bff;
+        margin-top: 4px;
+    }
+
+        .current-file a {
+            color: #007bff;
+            text-decoration: underline;
+        }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center custom-title">
+        <i class="fas fa-plus-circle"></i> @ViewData["Title"]
+    </h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p class="mb-1">@error.ErrorMessage</p>
+            }
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="custom-card">
+        <div class="card-body p-4">
+            <form asp-action="CreateToeic" method="post" enctype="multipart/form-data" class="custom-form">
+                <!-- === THÔNG TIN CHUNG === -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="LessonId" class="form-label">Mã đề thi</label>
+                        <input asp-for="LessonId" class="form-control" placeholder="Ví dụ: TOEIC001" required />
+                        <span asp-validation-for="LessonId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Title" class="form-label">Tiêu đề đề thi</label>
+                        <input asp-for="Title" class="form-control" placeholder="Đề thi TOEIC tháng 12/2025" required />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label asp-for="CourseId" class="form-label">Khóa học</label>
+                        <select asp-for="CourseId" class="form-select" asp-items="ViewBag.Courses" required>
+                            <option value="">-- Chọn khóa học --</option>
+                        </select>
+                        <span asp-validation-for="CourseId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="OrderIndex" class="form-label">Thứ tự</label>
+                        <input asp-for="OrderIndex" class="form-control" type="number" min="1" required />
+                        <span asp-validation-for="OrderIndex" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label asp-for="VideoUrl" class="form-label">Video URL</label>
+                        <input asp-for="VideoUrl" class="form-control" placeholder="https://youtube.com/..." />
+                        <span asp-validation-for="VideoUrl" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Content" class="form-label">Ghi chú</label>
+                        <textarea asp-for="Content" class="form-control" rows="3" placeholder="Ghi chú cho đề thi..."></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- === LISTENING === -->
+                <div class="part-title mt-4">
+                    <i class="fas fa-headphones"></i> Phần Listening - Audio chung (Part 1-4)
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">File âm thanh</label>
+                    <input type="file" name="AudioFile" accept="audio/*" class="form-control" required />
+                </div>
+
+                <!-- Part 1: Photographs -->
+                <div class="part-title">
+                    <i class="fas fa-image"></i> Part 1: Photographs (6 câu)
+                </div>
+                <p class="text-muted small mb-3">Nghe 4 câu mô tả → chọn đúng với hình</p>
+                <div id="part1-Quizzes">
+                    @for (int i = 0; i < 6; i++)
+                    {
+                        var q = i + 1;
+                        <div class="quiz-item" data-index="@i">
+                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                            <input type="hidden" name="Quizzes[@i].Question" value="Part 1 - Question @q" />
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Hình ảnh</label>
+                                    <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" required />
+                                </div>
+                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                <div class="col-12">
+                                    <label class="text-danger">Đáp án đúng</label>
+                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Part 2: Question-Response -->
+                <div class="part-title">
+                    <i class="fas fa-comments"></i> Part 2: Question-Response (25 câu)
+                </div>
+                <p class="text-muted small mb-3">Nghe câu hỏi → chọn đáp án phù hợp</p>
+                <div id="part2-Quizzes">
+                    @for (int i = 6; i < 31; i++)
+                    {
+                        var q = i + 1;
+                        <div class="quiz-item" data-index="@i">
+                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                    <input name="Quizzes[@i].Question" class="form-control" value="Part 2 - Question @q" />
+                                </div>
+                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                <div class="col-12">
+                                    <label class="text-danger">Đáp án đúng</label>
+                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Part 3: Conversations -->
+                <div class="part-title">
+                    <i class="fas fa-users"></i> Part 3: Conversations (39 câu)
+                </div>
+                <p class="text-muted small mb-3">Nghe hội thoại → trả lời câu hỏi</p>
+                <div id="part3-Quizzes">
+                    @for (int i = 31; i < 70; i++)
+                    {
+                        var q = i + 1;
+                        <div class="quiz-item" data-index="@i">
+                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                    <input name="Quizzes[@i].Question" class="form-control" value="Part 3 - Question @q" />
+                                </div>
+                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                <div class="col-12">
+                                    <label class="text-danger">Đáp án đúng</label>
+                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Part 4: Talks -->
+                <div class="part-title">
+                    <i class="fas fa-microphone"></i> Part 4: Talks (30 câu)
+                </div>
+                <p class="text-muted small mb-3">Nghe bài nói → trả lời câu hỏi</p>
+                <div id="part4-Quizzes">
+                    @for (int i = 70; i < 100; i++)
+                    {
+                        var q = i + 1;
+                        <div class="quiz-item" data-index="@i">
+                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                    <input name="Quizzes[@i].Question" class="form-control" value="Part 4 - Question @q" />
+                                </div>
+                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                <div class="col-12">
+                                    <label class="text-danger">Đáp án đúng</label>
+                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- === READING === -->
+                <div class="part-title mt-4">
+                    <i class="fas fa-book-open"></i> Phần Reading
+                </div>
+
+                <!-- Part 5: Incomplete Sentences -->
+                <div class="part-title">
+                    <i class="fas fa-pen"></i> Part 5: Incomplete Sentences (30 câu)
+                </div>
+                <p class="text-muted small mb-3">Điền từ vào câu thiếu</p>
+                <div id="part5-Quizzes">
+                    @for (int i = 100; i < 130; i++)
+                    {
+                        var q = i + 1;
+                        <div class="quiz-item" data-index="@i">
+                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                    <input name="Quizzes[@i].Question" class="form-control" value="Part 5 - Question @q" />
+                                </div>
+                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                <div class="col-12">
+                                    <label class="text-danger">Đáp án đúng</label>
+                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Part 6: Text Completion -->
+                <div class="part-title">
+                    <i class="fas fa-align-left"></i> Part 6: Text Completion (16 câu)
+                </div>
+                <p class="text-muted small mb-3">Hoàn thành đoạn văn</p>
+                <div id="part6-Quizzes">
+                    @for (int i = 130; i < 146; i++)
+                    {
+                        var q = i + 1;
+                        <div class="quiz-item" data-index="@i">
+                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                            <input type="hidden" name="Quizzes[@i].Question" value="Part 6 - Question @q" />
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Hình ảnh đoạn văn</label>
+                                    <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" required />
+                                </div>
+                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                <div class="col-12">
+                                    <label class="text-danger">Đáp án đúng</label>
+                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Part 7: Reading Comprehension -->
+                <div class="part-title">
+                    <i class="fas fa-book"></i> Part 7: Reading Comprehension (54 câu)
+                </div>
+                <p class="text-muted small mb-3">Đọc hiểu → trả lời câu hỏi</p>
+                <div id="part7-Quizzes">
+                    @for (int i = 146; i < 200; i++)
+                    {
+                        var q = i + 1;
+                        <div class="quiz-item" data-index="@i">
+                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                            <input type="hidden" name="Quizzes[@i].Question" value="Part 6 - Question @q" />
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Hình ảnh đoạn văn</label>
+                                    <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" required />
+                                </div>
+                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                <div class="col-12">
+                                    <label class="text-danger">Đáp án đúng</label>
+                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button style="margin:0 5px;" type="submit" class="btn custom-btn-success">
+                        <i class="fas fa-plus"></i> Thêm đề thi
+                    </button>
+                    <a asp-action="Index" class="btn custom-btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

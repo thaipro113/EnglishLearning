@@ -1,0 +1,355 @@
+﻿@model EnglishLearning.Models.Course
+@{
+    ViewData["Title"] = "Chi tiết khóa học";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+    var userId = (int)ViewBag.UserId;
+    var lessons = Model.Lessons.OrderBy(l => l.OrderIndex).ToList();
+    var totalLessons = lessons.Count;
+    var completedLessons = lessons.Count(l => l.Progresses.Any(p => p.UserId == userId && p.IsCompleted));
+}
+
+<!-- Tham chiếu CSS riêng -->
+<link href="~/css/course-details.css" rel="stylesheet" />
+<!-- Animate CSS (nếu không có trong TopFoot) -->
+<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" /> (xóa nếu đã có trong TopFoot) -->
+
+<div class="course-container animate__animated animate__fadeIn">
+    <h2 class="course-title text-center">@Model.Title</h2>
+
+    <!-- Thanh tiến trình học tập -->
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" style="width: @(totalLessons > 0 ? (completedLessons * 100.0 / totalLessons) : 0)%">
+            @if (completedLessons > 0)
+            {
+                <span class="progress-text">@completedLessons/@totalLessons bài hoàn thành</span>
+            }
+        </div>
+    </div>
+
+    <div class="row lesson-layout">
+        <div class="col-md-4 lesson-tabs-column">
+            <div class="lesson-tabs">
+                @for (int i = 0; i < lessons.Count; i++)
+                {
+                    <button class="tab-button @(i == 0 ? "active" : "")" data-tab="#lesson-@i">
+                        Bài @(i + 1): @lessons[i].Title
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-10 tab-content">
+            @for (int i = 0; i < lessons.Count; i++)
+            {
+                var lesson = lessons[i];
+                var progress = lesson.Progresses.FirstOrDefault(p => p.UserId == userId);
+
+                <div class="tab-panel @(i == 0 ? "active" : "")" id="lesson-@i">
+                    <div class="lesson-card">
+                        <h3 class="lesson-title">@lesson.Title</h3>
+
+                        <div class="progress-status">
+                            <strong>Tiến độ:</strong>
+                            @if (progress != null && progress.IsCompleted)
+                            {
+                                <span class="status-badge completed animate__animated animate__bounceIn">✔ Hoàn thành</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge pending animate__animated animate__bounceIn">✘ Chưa học</span>
+                            }
+                        </div>
+
+                        @if (lesson.LessonType != "TOEIC")
+                        {
+                            <!-- Nút kích hoạt hiển thị video với toggle -->
+                            <div class="video-section">
+                                <button class="video-toggle-btn toggle-collapse" data-bs-target="#videoCollapse-@i">
+                                    <i class="bi bi-play-circle"></i> Xem video bài học
+                                </button>
+
+                                <div class="collapse" id="videoCollapse-@i">
+                                    <div class="video-content">
+                                        <!-- Logic mới để nhúng video YouTube -->
+                                        @if (!string.IsNullOrEmpty(lesson.VideoUrl) && lesson.VideoUrl.Contains("youtube.com"))
+                                        {
+                                            var videoId = lesson.VideoUrl.Split("v=")[1].Split("&")[0];
+                                            var embedUrl = $"https://www.youtube.com/embed/{videoId}";
+
+                                            <div class="embed-responsive embed-responsive-16by9">
+                                                <iframe class="embed-responsive-item"
+                                                        src="@embedUrl"
+                                                        title="Video bài học"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                        allowfullscreen>
+                                                </iframe>
+                                            </div>
+                                        }
+                                        else if (!string.IsNullOrEmpty(lesson.VideoUrl))
+                                        {
+                                            <video class="video-player" controls>
+                                                <source src="@Url.Content(lesson.VideoUrl)" type="video/mp4">
+                                                Trình duyệt không hỗ trợ video.
+                                            </video>
+                                        }
+                                        else
+                                        {
+                                            <p class="no-video-text">Không có video cho bài học này.</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-section">
+                                <h4 class="quiz-title">Câu hỏi trắc nghiệm</h4>
+                                @if (lesson.Quizzes != null && lesson.Quizzes.Count > 0)
+                                {
+                                    <div class="quiz-accordion" id="quizAccordion-@i">
+                                        @for (int j = 0; j < lesson.Quizzes.Take(5).Count(); j++)
+                                        {
+                                            var quiz = lesson.Quizzes.ElementAt(j);
+                                            <div class="quiz-item">
+                                                <button class="quiz-toggle toggle-collapse" data-bs-target="#collapse-@i-@j">
+                                                    Câu hỏi @(j + 1): @quiz.Question
+                                                </button>
+                                                <div class="collapse" id="collapse-@i-@j">
+                                                    <div class="quiz-content">
+                                                        <form id="quiz-form-@quiz.QuizId" class="quiz-form">
+                                                            <input type="hidden" name="quizId" value="@quiz.QuizId" />
+
+                                                            <div class="quiz-option">
+                                                                <input class="option-input" type="radio" name="answer-@quiz.QuizId" value="A" id="a-@quiz.QuizId">
+                                                                <label class="option-label" for="a-@quiz.QuizId"><span>A)</span> @quiz.OptionA</label>
+                                                            </div>
+                                                            <div class="quiz-option">
+                                                                <input class="option-input" type="radio" name="answer-@quiz.QuizId" value="B" id="b-@quiz.QuizId">
+                                                                <label class="option-label" for="b-@quiz.QuizId"><span>B)</span> @quiz.OptionB</label>
+                                                            </div>
+                                                            <div class="quiz-option">
+                                                                <input class="option-input" type="radio" name="answer-@quiz.QuizId" value="C" id="c-@quiz.QuizId">
+                                                                <label class="option-label" for="c-@quiz.QuizId"><span>C)</span> @quiz.OptionC</label>
+                                                            </div>
+                                                            <div class="quiz-option">
+                                                                <input class="option-input" type="radio" name="answer-@quiz.QuizId" value="D" id="d-@quiz.QuizId">
+                                                                <label class="option-label" for="d-@quiz.QuizId"><span>D)</span> @quiz.OptionD</label>
+                                                            </div>
+
+                                                            <button type="button" class="check-answer-btn" data-quiz-id="@quiz.QuizId">
+                                                                <i class="bi bi-check-circle"></i> Kiểm tra
+                                                            </button>
+                                                            <span class="loading" style="display: none; margin-left: 10px;"></span>
+
+                                                            <div class="result-message text-danger fw-bold" style="display:none;"></div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (lesson.Quizzes.Count > 5)
+                                    {
+                                        <p class="text-muted text-center mt-2">* Sau khi xem video và làm thử trắc nghiệm thì chúng ta cùng làm bài kiểm tra để hoàn thành tiến độ nhé!</p>
+                                    }
+                                    <div class="test-link">
+                                        <a asp-controller="Test" asp-action="DoTest" asp-route-lessonId="@lesson.LessonId" class="test-btn">
+                                            📝 Làm bài kiểm tra
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">Không có câu hỏi trắc nghiệm.</p>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <button class="video-toggle-btn toggle-collapse" data-bs-target="#videoCollapse-@i">
+                                <i class="bi bi-play-circle"></i> Xem cấu trúc đề thi
+                            </button>
+
+                            <div class="collapse" id="videoCollapse-@i">
+                                <div class="video-content">
+                                    <!-- Logic mới để nhúng video YouTube -->
+                                    @if (!string.IsNullOrEmpty(lesson.VideoUrl) && lesson.VideoUrl.Contains("youtube.com"))
+                                    {
+                                        var videoId = lesson.VideoUrl.Split("v=")[1].Split("&")[0];
+                                        var embedUrl = $"https://www.youtube.com/embed/{videoId}";
+
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <iframe class="embed-responsive-item"
+                                                    src="@embedUrl"
+                                                    title="Video bài học"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    }
+                                    else if (!string.IsNullOrEmpty(lesson.VideoUrl))
+                                    {
+                                        <video class="video-player" controls>
+                                            <source src="@Url.Content(lesson.VideoUrl)" type="video/mp4">
+                                            Trình duyệt không hỗ trợ video.
+                                        </video>
+                                    }
+                                    else
+                                    {
+                                        <p class="no-video-text">Không có video cho bài học này.</p>
+                                    }
+                                </div>
+                            </div>
+                            <!-- Chỉ hiển thị nút làm bài cho TOEIC -->
+                            <div class="test-link">
+                                <a asp-controller="Test" asp-action="DoTest" asp-route-lessonId="@lesson.LessonId" class="test-btn">
+                                    📝 Làm bài kiểm tra TOEIC
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="test-link">
+    <a asp-controller="Course" asp-action="Index" class="test-btn-index">
+        Quay lại khóa học 📚
+    </a>
+</div>
+
+<style>
+    .test-btn-index {
+        background: linear-gradient(45deg, lightgreen, green);
+        color: #fff;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.4s ease;
+        display: inline-block;
+    }
+
+        .test-btn-index:hover {
+            color: white;
+            transform: translateY(-3px) scale(1.05);
+            background: linear-gradient(45deg, lightgreen, green);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            text-decoration: none;
+        }
+</style>
+
+<!-- Scripts -->
+<script>
+    // Toggle collapse: Khi click lại cùng nút thì đóng lại
+    document.querySelectorAll('.toggle-collapse').forEach(button => {
+        button.addEventListener('click', function () {
+            const targetSelector = this.getAttribute('data-bs-target');
+            const target = document.querySelector(targetSelector);
+            const isShown = target.classList.contains('show');
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(target);
+            if (isShown) {
+                bsCollapse.hide();
+            } else {
+                bsCollapse.show();
+            }
+        });
+    });
+
+    document.querySelectorAll('.check-answer-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const quizId = this.dataset.quizId;
+            const form = document.querySelector(`#quiz-form-${quizId}`);
+            const selected = form.querySelector(`input[name="answer-${quizId}"]:checked`);
+            const resultDiv = form.querySelector('.result-message');
+            const loading = form.querySelector('.loading');
+
+            // Reset giao diện
+            form.querySelectorAll('.option-label').forEach(label => {
+                label.classList.remove('text-success', 'text-danger');
+            });
+            resultDiv.style.display = 'none';
+            resultDiv.classList.remove('text-success', 'text-danger');
+            loading.style.display = 'inline-block';
+
+            if (!selected) {
+                loading.style.display = 'none';
+                resultDiv.textContent = "Vui lòng chọn một đáp án!";
+                resultDiv.classList.add('text-danger');
+                resultDiv.style.display = 'block';
+                resultDiv.classList.add('animate__animated', 'animate__shakeX');
+                setTimeout(() => resultDiv.classList.remove('animate__shakeX'), 500);
+                return;
+            }
+
+            const selectedAnswer = selected.value;
+
+            fetch('/Quiz/CheckAnswer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify({
+                    quizId: parseInt(quizId),
+                    selectedAnswer: selectedAnswer
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    loading.style.display = 'none';
+                    if (!data.success) {
+                        resultDiv.textContent = data.message;
+                        resultDiv.classList.add('text-danger');
+                        resultDiv.style.display = 'block';
+                        resultDiv.classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => resultDiv.classList.remove('animate__shakeX'), 500);
+                        return;
+                    }
+
+                    const selectedLabel = selected.nextElementSibling;
+
+                    if (data.isCorrect) {
+                        selectedLabel.classList.add('text-success');
+                        resultDiv.innerHTML = "✅ <strong>Chính xác!</strong>";
+                        resultDiv.classList.add('text-success');
+                        resultDiv.classList.add('animate__animated', 'animate__bounceIn');
+                    } else {
+                        selectedLabel.classList.add('text-danger');
+                        resultDiv.innerHTML = `❌ <strong>Sai.</strong> Đáp án đúng là: <span class="text-success">${data.correctAnswer}</span>`;
+                        resultDiv.classList.add('text-danger');
+                        resultDiv.classList.add('animate__animated', 'animate__fadeIn');
+
+                        const correctRadio = form.querySelector(`input[value="${data.correctAnswer}"]`);
+                        if (correctRadio) {
+                            correctRadio.nextElementSibling.classList.add('text-success');
+                        }
+                    }
+
+                    resultDiv.style.display = 'block';
+                    setTimeout(() => resultDiv.classList.remove('animate__bounceIn', 'animate__fadeIn'), 1000);
+                })
+                .catch(error => {
+                    loading.style.display = 'none';
+                    console.error("Lỗi khi gửi dữ liệu:", error);
+                    resultDiv.textContent = "Lỗi khi kiểm tra đáp án!";
+                    resultDiv.classList.add('text-danger');
+                    resultDiv.style.display = 'block';
+                    resultDiv.classList.add('animate__animated', 'animate__shakeX');
+                    setTimeout(() => resultDiv.classList.remove('animate__shakeX'), 500);
+                });
+        });
+    });
+
+    // Chuyển tab thủ công
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function () {
+            const tabId = this.getAttribute('data-tab');
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelector(tabId).classList.add('active');
+        });
+    });
+</script>

@@ -1,0 +1,122 @@
+﻿@model EnglishLearning.Models.ParagraphData
+@{
+    ViewData["Title"] = "Luyện dịch";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeIn">
+        <div class="card-header bg-gradient text-white text-center py-4" style="background: linear-gradient(135deg, #2196f3, #21cbf3); border-radius: 15px 15px 0 0;">
+            <h2 class="mb-0"><i class="bi bi-translate me-2"></i>Luyện dịch - @Model.Level - @Model.Topic</h2>
+        </div>
+        <div class="card-body p-5">
+            <div class="mb-4">
+                <h5 class="fw-bold text-primary"><i class="bi bi-book-fill me-2"></i>Đoạn văn gốc (English):</h5>
+                <p class="bg-light p-3 rounded-3 shadow-sm">@Model.Paragraph</p>
+            </div>
+
+            <div class="chatbox mb-4" id="chatbox">
+                <div class="message-container" id="response"></div>
+            </div>
+
+            <!-- Ô nhập dịch -->
+            <div class="input-group mt-4">
+                <input type="text" class="form-control form-control-lg rounded-pill shadow-sm" id="userTranslation" placeholder="✍️ Nhập bản dịch của bạn..." />
+                <button class="btn btn-success btn-lg ms-2 rounded-pill" onclick="checkTranslation()"><i class="bi bi-check-circle-fill me-2"></i>Kiểm tra</button>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-center">
+                <a asp-action="History" asp-controller="Translation" class="btn btn-outline-info btn-lg rounded-pill px-4 me-2">
+                    <i class="bi bi-clock-history me-2"></i>Xem lịch sử
+                </a>
+                <a asp-action="SelectLevel" asp-controller="Translation" class="btn btn-primary btn-lg rounded-pill px-4" id="backButtonContainer" style="display:none;">
+                    <i class="bi bi-arrow-left-circle-fill me-2"></i>Quay lại chọn chủ đề
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const responseDiv = document.getElementById('response');
+        // Lấy CurrentSentenceIndex từ ViewBag, mặc định là 0 nếu không có
+        let currentSentenceIndex = @ViewBag.CurrentSentenceIndex ?? 0;
+        let sentences = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Sentences));
+
+        // Hiển thị câu hiện tại dựa trên CurrentSentenceIndex
+        function initializeSentence() {
+            if (currentSentenceIndex < sentences.length) {
+                showMessage(`👉 Câu thứ ${currentSentenceIndex + 1}: ${sentences[currentSentenceIndex]}`, 'bot');
+            } else {
+                showMessage('✅ Hoàn thành đoạn văn!', 'bot');
+                document.getElementById("backButtonContainer").style.display = "inline-block";
+            }
+        }
+
+        // Gọi hàm khởi tạo khi tải trang
+        initializeSentence();
+
+        async function checkTranslation() {
+            const userTranslation = document.getElementById('userTranslation').value.trim();
+            if (!userTranslation) {
+                showMessage('⚠️ Vui lòng nhập bản dịch.', 'error');
+                return;
+            }
+
+            const loadingDiv = showMessage('🔍 Đang kiểm tra...', 'loading');
+            document.getElementById('userTranslation').value = '';
+
+            try {
+                const response = await fetch('/Translation/CheckTranslation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ UserTranslation: userTranslation })
+                });
+                const result = await response.json();
+                if (result.error) {
+                    updateMessage(loadingDiv, result.error, 'error');
+                    return;
+                }
+
+                // Hiển thị kết quả chi tiết
+                updateMessage(
+                    loadingDiv,
+                    `<strong>📝 Bản dịch của bạn:</strong> ${userTranslation}<br/>
+                             🎯 <strong>Độ chính xác:</strong> ${result.accuracy}%<br/>
+                             💡 <strong>Gợi ý lỗi:</strong> ${result.errorSuggestion}`,
+                    'bot'
+                );
+
+                if (result.nextSentence) {
+                    currentSentenceIndex++;
+                    showMessage(`👉 Câu thứ ${currentSentenceIndex + 1}: ${result.nextSentence}`, 'bot');
+                } else if (result.isComplete) {
+                    showMessage('✅ Hoàn thành đoạn văn!', 'bot');
+                    document.getElementById("backButtonContainer").style.display = "inline-block";
+                }
+            } catch (error) {
+                updateMessage(loadingDiv, `❌ Lỗi: ${error.message}`, 'error');
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', type === 'bot' ? 'bot-message' : type === 'loading' ? 'loading-message' : 'error-message');
+            messageDiv.innerHTML = text;
+            responseDiv.appendChild(messageDiv);
+            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            return messageDiv;
+        }
+
+        function updateMessage(div, text, type) {
+            div.className = 'message';
+            div.classList.add(type === 'bot' ? 'bot-message' : 'error-message');
+            div.innerHTML = text;
+            div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+}
+
+<link href="~/css/practice.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />

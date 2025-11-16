@@ -1,0 +1,138 @@
+﻿@model List<EnglishLearning.Models.ChatHistory>
+@{
+    ViewData["Title"] = "ChatBot";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+
+<link href="~/css/chatbot.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="card chat-card shadow-lg rounded-4">
+        <div class="card-header">
+            <h2 class="mb-0">TLChatBot</h2>
+        </div>
+        <div class="card-body p-4">
+            <div class="chatbox" id="chatbox">
+                <div class="message-container" id="response">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            var messageClass = item.Role == "user" ? "user-message" : "bot-message";
+                            <div class="message @messageClass" data-role="@item.Role" data-message="@Html.Raw(System.Net.WebUtility.HtmlEncode(item.Message))"></div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="input-group mt-4">
+                <input type="text" class="form-control form-control-lg" id="userInput" placeholder="Nhập câu hỏi của bạn..." />
+                <button class="btn btn-success btn-lg ms-2" onclick="sendMessage()">Gửi!</button>
+            </div>
+            <button class="btn btn-outline-danger mt-2" onclick="clearHistory()">Xóa lịch sử</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const responseDiv = document.getElementById('response');
+
+        // Hàm dùng chung để render Markdown
+        function renderMarkdown(text) {
+            const html = marked.parse(text || '');
+            const container = document.createElement('div');
+            container.innerHTML = html;
+            return container;
+        }
+
+        // Render các message đã có từ server
+        document.querySelectorAll('#response .message').forEach(div => {
+            const raw = div.getAttribute('data-message');
+            const unescaped = raw.replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&#39;', "'");
+            const content = renderMarkdown(unescaped);
+            div.innerHTML = '';
+            div.appendChild(content);
+        });
+
+        responseDiv.scrollTop = responseDiv.scrollHeight;
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput').value.trim();
+            if (!input) {
+                showMessage('<span class="text-danger">Vui lòng nhập tin nhắn.</span>', 'error');
+                return;
+            }
+
+            showMessage(`**Bạn:** ${input}`, 'user');
+
+            const loadingDiv = showMessage('Đang xử lý...', 'loading');
+            document.getElementById('userInput').value = '';
+
+            try {
+                const response = await fetch('/Chatbot/Ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userInput: input })
+                });
+
+                const result = await response.json();
+                updateMessage(loadingDiv, `**Chatbot:** ${result.reply}`, 'bot');
+            } catch (error) {
+                updateMessage(loadingDiv, `Lỗi: ${error.message}`, 'error');
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            if (type === 'user') {
+                messageDiv.classList.add('user-message');
+            } else if (type === 'bot') {
+                messageDiv.classList.add('bot-message');
+            } else if (type === 'loading') {
+                messageDiv.classList.add('loading-message');
+            } else {
+                messageDiv.classList.add('error-message');
+            }
+
+            const content = renderMarkdown(text);
+            messageDiv.appendChild(content);
+            responseDiv.appendChild(messageDiv);
+            responseDiv.scrollTop = responseDiv.scrollHeight;
+            return messageDiv;
+        }
+
+        function updateMessage(div, text, type) {
+            div.className = 'message';
+            div.classList.add(type === 'bot' ? 'bot-message' : 'error-message');
+
+            const content = renderMarkdown(text);
+            div.innerHTML = '';
+            div.appendChild(content);
+            responseDiv.scrollTop = responseDiv.scrollHeight;
+        }
+
+        async function clearHistory() {
+            if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử chat?")) return;
+
+            const response = await fetch('/Chatbot/ClearHistory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                responseDiv.innerHTML = '';
+            } else {
+                alert('Có lỗi xảy ra khi xóa lịch sử.');
+            }
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+}

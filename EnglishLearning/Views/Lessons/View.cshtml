@@ -1,0 +1,9 @@
+﻿@model Lesson
+
+<h2>@Model.Title</h2>
+<p>@Model.Content</p>
+
+<form method="post" asp-action="MarkAsComplete">
+    <input type="hidden" name="lessonId" value="@Model.LessonId" />
+    <button type="submit" class="btn btn-success">Đánh dấu đã học</button>
+</form>

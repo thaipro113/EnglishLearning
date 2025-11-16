@@ -1,0 +1,147 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Dictionary App";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary App</title>
+    <link rel="stylesheet" href="~/css/dictionary.css">
+</head>
+<body>
+    <div class="dict-container">
+        <h1 class="dict-title">Dictionary</h1>
+        <p class="text-muted text-center mt-2">* Phần từ điển này chỉ cho chúng ta biết về cách phát âm , loại từ , đồng nghĩa , trái nghĩa </p>
+        <form action="#" class="dict-search-box" id="dict-search-form">
+            <input type="text" name="dict-search-input" id="dict-search-input" placeholder="Search a word..." required>
+            <button type="submit" class="dict-search-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14" />
+                </svg>
+            </button>
+        </form>
+        <p class="dict-error-text"></p>
+        <div class="dict-word-details">
+            <div class="dict-word-info">
+                <div class="dict-word-name">
+                    <h2 id="dict-word-text" class="dict-word-text">play</h2>
+                    <p class="dict-phonetic-info">
+                        <span id="dict-part-speech" class="dict-part-of-speech">verb</span>
+                        <span id="dict-phonetic" class="dict-phonetic">/pleɪ/</span>
+                    </p>
+                </div>
+                <button type="button" id="dict-sound-btn" class="dict-sound-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+                        <path fill="currentColor" d="M12.031 1.063c-.321.001-.676.145-1 .468L5.312 8H1c-.551 0-1 .449-1 1v8c0 .551.449 1 1 1h4.313L11 24.438c1 1 2 .488 2-.875V2.28c0-.791-.433-1.222-.969-1.219zm7.25 2a1 1 0 0 0-.218 1.906A8.96 8.96 0 0 1 24 13c0 3.524-2 6.55-4.938 8.031a1 1 0 1 0 .875 1.782C23.53 21 26 17.288 26 13s-2.471-8-6.063-9.813a1 1 0 0 0-.562-.124a1 1 0 0 0-.094 0m-2.375 3.874a1 1 0 0 0-.406 1.875C18.043 9.771 19 11.29 19 13c0 1.722-.972 3.261-2.531 4.219a1 1 0 1 0 1.062 1.687C19.601 17.636 21 15.476 21 13c0-2.461-1.387-4.633-3.438-5.906A1 1 0 0 0 17 6.937a1 1 0 0 0-.094 0" />
+                    </svg>
+                </button>
+            </div>
+            <p class="dict-definition" id="dict-definition-text">Activity for amusement only, especially among the young.</p>
+            <div class="dict-blockquote-example" id="dict-example-elem">
+                <h3>Examples</h3>
+                <p class="dict-example-text">Children learn through play.</p>
+            </div>
+            <div class="dict-blockquote" id="dict-synonyms-elem">
+                <h3>Synonyms (Từ đồng nghĩa)</h3>
+                <p class="dict-synonym-text">play</p>
+            </div>
+            <div class="dict-blockquote-Antonyms" id="dict-antonyms-elem">
+                <h3>Antonyms (Từ trái nghĩa)</h3>
+                <p class="dict-antonym-text">some word</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const searchBox = document.getElementById("dict-search-form");
+        const searchInput = document.getElementById("dict-search-input");
+        const wordTxt = document.getElementById("dict-word-text");
+        const typeTxt = document.getElementById("dict-part-speech");
+        const phoneticTxt = document.getElementById("dict-phonetic");
+        const soundBtn = document.getElementById("dict-sound-btn");
+        const definitionTxt = document.getElementById("dict-definition-text");
+        const exampleElem = document.getElementById("dict-example-elem");
+        const synonymsElem = document.getElementById("dict-synonyms-elem");
+        const antonymsElem = document.getElementById("dict-antonyms-elem");
+        const audio = new Audio();
+        const wordDetailsElem = document.querySelector(".dict-word-details");
+        const errTxt = document.querySelector(".dict-error-text");
+
+        async function getWordDetails(word) {
+            try {
+                const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                const data = await res.json();
+                const wordData = data[0];
+                const phonetics = wordData.phonetics || [];
+
+                let phoneticText = "", phoneticAudio = "";
+                for (const phonetic of phonetics) {
+                    if (phonetic.text && !phoneticText) phoneticText = phonetic.text;
+                    if (phonetic.audio && !phoneticAudio) phoneticAudio = phonetic.audio;
+                    if (phoneticText && phoneticAudio) break;
+                }
+
+                const meaning = wordData.meanings[0] || { partOfSpeech: "", definitions: [{ definition: "", example: "" }], synonyms: [], antonyms: [] };
+
+                return {
+                    word: word.toLowerCase(),
+                    phonetic: { text: phoneticText, audio: phoneticAudio },
+                    speechPart: meaning.partOfSpeech,
+                    definition: meaning.definitions[0].definition,
+                    synonyms: meaning.synonyms || [],
+                    antonyms: meaning.antonyms || [],
+                    example: meaning.definitions[0].example || ""
+                };
+            } catch (error) {
+                throw new Error(`Failed to fetch word details: ${error.message}`);
+            }
+        }
+
+        searchBox.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const word = searchInput.value.trim();
+            if (word === "") {
+                errTxt.textContent = "Please Enter a Word";
+                wordDetailsElem.classList.remove("active");
+            } else {
+                wordDetailsElem.classList.remove("active");
+                try {
+                    errTxt.textContent = "";
+                    const wordDetails = await getWordDetails(word);
+                    wordTxt.textContent = wordDetails.word;
+                    typeTxt.textContent = wordDetails.speechPart;
+                    phoneticTxt.textContent = wordDetails.phonetic.text;
+                    audio.src = wordDetails.phonetic.audio;
+                    definitionTxt.textContent = wordDetails.definition;
+                    exampleElem.querySelector(".dict-example-text").textContent = wordDetails.example;
+                    synonymsElem.querySelector(".dict-synonym-text").textContent = wordDetails.synonyms.join(", ") || "None";
+                    antonymsElem.querySelector(".dict-antonym-text").textContent = wordDetails.antonyms.join(", ") || "None";
+                    exampleElem.style.display = wordDetails.example === "" ? "none" : "block";
+                    synonymsElem.style.display = wordDetails.synonyms.length === 0 ? "none" : "block";
+                    antonymsElem.style.display = wordDetails.antonyms.length === 0 ? "none" : "block";
+                    wordDetailsElem.classList.add("active", "fade-in");
+                } catch (error) {
+                    errTxt.textContent = `Word Not Found or Error: ${error.message}`;
+                    wordDetailsElem.classList.remove("active");
+                }
+            }
+        });
+
+        soundBtn.addEventListener("click", () => {
+            if (audio.src) {
+                audio.play().catch(err => {
+                    errTxt.textContent = "Error playing audio: " + err.message;
+                });
+            } else {
+                errTxt.textContent = "No audio available";
+            }
+        });
+    </script>
+</body>
+</html>

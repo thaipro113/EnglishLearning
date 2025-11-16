@@ -1,0 +1,570 @@
+﻿@model List<Quiz>
+@{
+    ViewBag.Title = ViewBag.Title ?? (ViewBag.LessonType == "TOEIC" ? "Làm bài kiểm tra TOEIC" : "Làm bài kiểm tra");
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+    var lessonType = ViewBag.LessonType as string ?? "Normal";
+    var timerDuration = lessonType == "TOEIC" ? 120 * 60 : 30 * 60;
+}
+
+<style>
+    :root {
+        --primary: #4CAF50;
+        --danger: #f44336;
+        --dark: #333;
+    }
+
+    .quizzy-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 15px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .quiz-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--dark);
+    }
+
+    .quiz-subtitle {
+        font-size: 1.2rem;
+        color: #2196F3;
+    }
+
+    .timer {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .progress-container {
+        background: #e0e0e0;
+        height: 8px;
+        border-radius: 4px;
+        margin: 15px 0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4CAF50, #8bc34a);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .quiz-body {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        background: #fafafa;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        height: calc(100vh - 250px);
+        overflow-y: auto;
+        position: sticky;
+        top: 100px;
+    }
+
+    .question-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+        gap: 8px;
+        margin: 10px 0;
+    }
+
+    .q-number {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        background: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s ease;
+    }
+
+        .q-number:hover {
+            background: #e0f7fa;
+        }
+
+        .q-number.answered {
+            background: #E8F5E9;
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .q-number.current {
+            border-color: #2196F3;
+            background: #e3f2fd;
+        }
+
+    /* Main quiz content */
+    .quiz-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #eee;
+        min-height: 500px;
+    }
+
+    .question-item {
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        margin-bottom: 15px;
+    }
+
+    .question-text {
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .option-label {
+        display: block;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: 6px 0;
+        background: #f9f9f9;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .option-label:hover {
+            background: #f1f8e9;
+            border-color: var(--primary);
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 10px;
+        }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-next {
+        background: #2196F3;
+        color: white;
+    }
+
+        .btn-next:hover {
+            background: #1976D2;
+        }
+
+    .btn-prev {
+        background: #FF9800;
+        color: white;
+    }
+
+        .btn-prev:hover {
+            background: #F57C00;
+        }
+
+        .btn-prev:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        width: 100%;
+        margin-top: 15px;
+    }
+
+        .btn-submit:hover {
+            background: #43a047;
+        }
+        /* Thông báo lỗi nộp bài */
+    #submitWarning {
+        animation: shake 0.5s ease-in-out;
+        border: 2px solid #ffc107 !important;
+        background: linear-gradient(135deg, #fff8e1, #ffeaa7) !important;
+        color: #856404;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+
+    .q-number.unanswered {
+        background: #ffebee !important;
+        border-color: #efa82c !important;
+        color: rgb(133, 100, 4);
+        animation: pulse 1.5s infinite;
+    }
+
+</style>
+
+<div class="quizzy-container">
+    <div class="quiz-header">
+        <div class="quiz-title">ENGLISH TEST</div>
+        <div class="quiz-subtitle">@ViewBag.Title</div>
+        <div class="timer">Thời gian: <span id="timer">@(lessonType == "TOEIC" ? "120:00" : "30:00")</span></div>
+    </div>
+    <!-- THÔNG BÁO LỖI NỘP BÀI -->
+    <div id="submitWarning" class="alert alert-warning mt-3 d-none" role="alert" style="max-width: 600px; margin: 0 auto; text-align: center;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Bạn chưa hoàn thành bài thi!</strong><br>
+        <span id="missingCount"></span> câu chưa được trả lời.
+        <button type="button" class="btn-close float-end" onclick="document.getElementById('submitWarning').classList.add('d-none')"></button>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="quiz-body">
+        <div class="sidebar">
+            <h4 style="text-align:center; margin-bottom:10px;">Sơ đồ câu hỏi</h4>
+            <div class="question-grid" id="questionGrid"></div>
+            <button type="button" class="btn btn-submit" onclick="submitQuiz()">Nộp bài</button>
+        </div>
+
+        <div class="quiz-content">
+            <form asp-action="SubmitTest" method="post" id="quizForm">
+                <input type="hidden" name="lessonId" value="@ViewBag.LessonId" />
+                <div id="questionsContainer">
+                    @if (lessonType == "TOEIC")
+                    {
+                        <!-- ====================== TOEIC: PART 1-7 ====================== -->
+                        <h3 class="mt-4">Listening Section</h3>
+
+                        @if (!string.IsNullOrEmpty(ViewBag.AudioPath))
+                        {
+                            <div class="audio-player">
+                                <audio controls class="w-100 mb-4">
+                                    <source src="@Url.Content(ViewBag.AudioPath)" type="audio/mpeg">
+                                    Trình duyệt không hỗ trợ audio.
+                                </audio>
+                            </div>
+                        }
+
+                        <!-- Part 1: Photographs (6 câu) -->
+                        <h5>Part 1: Photographs (6 câu)</h5>
+                        @for (int j = 0; j < 6 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            <div class="question-item">
+                                <strong>@(j + 1). @quiz.Question</strong><br />
+                                @if (!string.IsNullOrEmpty(quiz.ImagePath))
+                                {
+                                    <img src="@Url.Content(quiz.ImagePath)" alt="Photograph" style="max-width: 500px; margin-bottom: 10px;margin-left:25px;" />
+                                }
+                                @foreach (var option in new[] { "A", "B", "C", "D" })
+                                {
+                                    <label class="option-label">
+                                        <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                        <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                    </label>
+                                }
+                            </div>
+                        }
+
+                        <!-- Part 2: Question – Response (25 câu) -->
+                        <h5>Part 2: Question – Response (25 câu)</h5>
+                        @for (int j = 6; j < 31 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            <div class="question-item">
+                                <strong>@(j + 1). @quiz.Question</strong><br />
+                                @foreach (var option in new[] { "A", "B", "C" })
+                                {
+                                    <label class="option-label">
+                                        <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                        <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                    </label>
+                                }
+                            </div>
+                        }
+
+                        <!-- Part 3: Conversations (39 câu) -->
+                        <h5>Part 3: Conversations (39 câu)</h5>
+                        @for (int j = 31; j < 70 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            <div class="question-item">
+                                <strong>@(j + 1). @quiz.Question</strong><br />
+                                @foreach (var option in new[] { "A", "B", "C", "D" })
+                                {
+                                    <label class="option-label">
+                                        <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                        <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                    </label>
+                                }
+                            </div>
+                        }
+
+                        <!-- Part 4: Talks (30 câu) -->
+                        <h5>Part 4: Talks (30 câu)</h5>
+                        @for (int j = 70; j < 100 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            <div class="question-item">
+                                <strong>@(j + 1). @quiz.Question</strong><br />
+                                @foreach (var option in new[] { "A", "B", "C", "D" })
+                                {
+                                    <label class="option-label">
+                                        <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                        <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                    </label>
+                                }
+                            </div>
+                        }
+
+                        <h3 class="mt-4">Reading Section</h3>
+
+                        <!-- Part 5: Incomplete Sentences (30 câu) -->
+                        <h5>Part 5: Incomplete Sentences (30 câu)</h5>
+                        @for (int j = 100; j < 130 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            <div class="question-item">
+                                <strong>@(j + 1). @quiz.Question</strong><br />
+                                @foreach (var option in new[] { "A", "B", "C", "D" })
+                                {
+                                    <label class="option-label">
+                                        <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                        <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                    </label>
+                                }
+                            </div>
+                        }
+
+                        <!-- Part 6: Text Completion (16 câu) -->
+                        <h5>Part 6: Text Completion (16 câu)</h5>
+                        @for (int j = 130; j < 146 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            <div class="question-item">
+                                <strong>@(j + 1). @quiz.Question</strong><br />
+                                @if (!string.IsNullOrEmpty(quiz.ImagePath))
+                                {
+                                    <img src="@Url.Content(quiz.ImagePath)" alt="Photograph" style="max-width: 500px; margin-bottom: 10px;margin-left:25px;" />
+                                }
+                                @foreach (var option in new[] { "A", "B", "C", "D" })
+                                {
+                                    <label class="option-label">
+                                        <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                        <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                    </label>
+                                }
+                            </div>
+                        }
+
+                        <!-- Part 7: Reading Comprehension (54 câu) -->
+                        <h5>Part 7: Reading Comprehension (54 câu)</h5>
+                        @for (int j = 146; j < 200 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            <div class="question-item">
+                                <strong>@(j + 1). @quiz.Question</strong><br />
+                                @if (!string.IsNullOrEmpty(quiz.ImagePath))
+                                {
+                                    <img src="@Url.Content(quiz.ImagePath)" alt="Photograph" style="max-width: 500px; margin-bottom: 10px;margin-left:25px;" />
+                                }
+                                @foreach (var option in new[] { "A", "B", "C", "D" })
+                                {
+                                    <label class="option-label">
+                                        <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                        <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                    </label>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <!-- ====================== NORMAL: TẤT CẢ CÂU HỎI ====================== -->
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var quiz = Model[i];
+                            <div class="question-item" data-qid="@quiz.QuizId" style="display: none;">
+                                <div class="question-text">
+                                    <strong>Câu @(i + 1): @quiz.Question</strong>
+                                </div>
+                                <div class="options">
+                                    @foreach (var o in new[] { "A", "B", "C", "D" })
+                                    {
+                                        var val = quiz.GetType().GetProperty($"Option{o}")?.GetValue(quiz)?.ToString();
+                                        if (!string.IsNullOrEmpty(val))
+                                        {
+                                            <label class="option-label">
+                                                <input type="radio" name="userAnswers[@quiz.QuizId]" value="@o" onchange="updateAnswer(@i, this)" required />
+                                                <strong>@o.</strong> @val
+                                            </label>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-prev" id="prevBtn" onclick="prevQuestion()">Câu trước</button>
+                    <button type="button" class="btn btn-next" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let time = @(timerDuration);
+        const timer = document.getElementById('timer');
+        const progressBar = document.getElementById('progressBar');
+        const questions = document.querySelectorAll('.question-item');
+        const grid = document.getElementById('questionGrid');
+        const totalQuestions = questions.length;
+        let currentQuestion = 0;
+        let answers = new Array(totalQuestions).fill(null);
+
+        const lessonId = "@ViewBag.LessonId";
+        const keyAnswers = `quizAnswers_${lessonId}`;
+        const keyTime = `quizTimeLeft_${lessonId}`;
+
+        // Tạo lưới số câu
+        for (let i = 0; i < totalQuestions; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'q-number';
+            btn.textContent = i + 1;
+            btn.onclick = () => showQuestion(i);
+            grid.appendChild(btn);
+        }
+        const qNumbers = document.querySelectorAll('.q-number');
+
+        function showQuestion(index) {
+            questions.forEach((q, i) => q.style.display = i === index ? 'block' : 'none');
+            qNumbers.forEach((n, i) => {
+                n.classList.toggle('current', i === index);
+                n.classList.remove('unanswered');
+            });
+            currentQuestion = index;
+            updateProgress();
+            updateNextButton();
+
+            const btnGroup = document.querySelector('.btn-group');
+            questions[index].after(btnGroup);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) showQuestion(currentQuestion + 1);
+        }
+        function prevQuestion() {
+            if (currentQuestion > 0) showQuestion(currentQuestion - 1);
+        }
+
+        function updateAnswer(qIndex, radio) {
+            answers[qIndex] = radio.value;
+            qNumbers[qIndex].classList.add('answered');
+            updateProgress();
+            updateNextButton();
+            localStorage.setItem(keyAnswers, JSON.stringify(answers));
+        }
+
+        function updateProgress() {
+            const answeredCount = answers.filter(a => a !== null).length;
+            progressBar.style.width = `${(answeredCount / totalQuestions) * 100}%`;
+        }
+
+        function updateNextButton() {
+            document.getElementById('prevBtn').disabled = (currentQuestion === 0);
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.disabled = currentQuestion >= totalQuestions - 1;
+            nextBtn.textContent = currentQuestion >= totalQuestions - 1 ? "Câu cuối" : "Câu tiếp theo";
+        }
+
+        // Đếm ngược
+        setInterval(() => {
+            if (time > 0) {
+                time--;
+                const m = Math.floor(time / 60), s = time % 60;
+                timer.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                localStorage.setItem(keyTime, time);
+            } else {
+                document.getElementById("quizForm").submit();
+            }
+        }, 1000);
+
+        // Khôi phục
+        window.addEventListener('load', () => {
+            const savedAnswers = JSON.parse(localStorage.getItem(keyAnswers));
+            const savedTime = localStorage.getItem(keyTime);
+
+            if (savedAnswers && savedAnswers.length === totalQuestions) {
+                answers = savedAnswers;
+                answers.forEach((ans, i) => {
+                    if (ans) {
+                        const radios = questions[i].querySelectorAll('input[type="radio"]');
+                        radios.forEach(r => { if (r.value === ans) r.checked = true; });
+                        qNumbers[i].classList.add('answered');
+                    }
+                });
+            }
+            if (savedTime) time = parseInt(savedTime);
+            showQuestion(0);
+        });
+
+
+        function submitQuiz() {
+            const answeredCount = answers.filter(a => a !== null).length;
+
+            if (answeredCount < totalQuestions) {
+                const missing = totalQuestions - answeredCount;
+                const warning = document.getElementById('submitWarning');
+                document.getElementById('missingCount').textContent = `Còn thiếu ${missing}`;
+                warning.classList.remove('d-none');
+
+                // Highlight các câu chưa làm
+                qNumbers.forEach((num, i) => {
+                    if (answers[i] === null) {
+                        num.classList.add('unanswered');
+                    } else {
+                        num.classList.remove('unanswered');
+                    }
+                });
+
+                // Cuộn đến thông báo
+                warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                return; // NGĂN NỘP BÀI
+            }
+
+            // Nếu đủ → xóa dữ liệu + nộp
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith("quiz")) localStorage.removeItem(key);
+            });
+            document.getElementById("quizForm").submit();
+        }
+
+    </script>
+}

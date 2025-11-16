@@ -1,0 +1,170 @@
+﻿@model EnglishLearning.Models.User
+@{
+    ViewData["Title"] = "Chỉnh sửa hồ sơ";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+
+
+<div class="edit-container">
+    <div class="edit-card bg-gradient p-4 rounded-lg shadow-lg">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
+        }
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+        }
+        <h2 class="text-center text-white mb-4 animate__animated animate__fadeInDown" style="text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);">Chỉnh sửa hồ sơ</h2>
+        <form asp-action="Profile" method="post" enctype="multipart/form-data" class="edit-form">
+            <div class="mb-3 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                <label asp-for="FullName" class="form-label text-black"></label>
+                <input asp-for="FullName" class="form-control custom-input text-black" />
+            </div>
+            <div class="mb-3 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <label asp-for="PhoneNumber" class="form-label text-black"></label>
+                <input asp-for="PhoneNumber" class="form-control custom-input text-black" />
+            </div>
+            <div class="mb-3 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                <label asp-for="Level" class="form-label text-black"></label>
+                <input asp-for="Level" class="form-control custom-input text-black" />
+            </div>
+            <div class="mb-3 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                <label asp-for="Purpose" class="form-label text-black"></label>
+                <input asp-for="Purpose" class="form-control custom-input text-black" />
+            </div>          
+            <div class="mb-3 animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+                <label for="ImageFile" class="form-label text-black">Ảnh đại diện mới</label>
+                <input type="file" name="ImageFile" class="form-control custom-input" accept="image/*" />
+            </div>
+           
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="mb-3 text-center animate__animated animate__fadeInUp" style="animation-delay: 0.7s;">
+                    <img src="~/uploads/@Model.ImageUrl" alt="Avatar" class="rounded profile-img-edit" style="width: 120px; border: 4px solid #fff;" />
+                </div>
+            }
+
+            <div class="text-center mt-4 animate__animated animate__fadeInUp" style="animation-delay: 0.8s;">
+                <button type="submit" class="btn btn-light btn-lg btn-custom me-2">Lưu thay đổi</button>
+                <a asp-action="Profile" class="btn btn-light btn-lg btn-custom">Hủy</a>
+            </div>
+        </form>
+        @if (!string.IsNullOrEmpty(Model.PasswordHash))
+        {
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-warning" onclick="togglePasswordForm()">Đổi mật khẩu</button>
+            </div>
+
+            <!-- Form đổi mật khẩu -->
+            <div id="passwordForm" class="mt-4" style="display:none;">
+                <form asp-action="ChangePassword" method="post">
+                    <div class="mb-3">
+                        <label for="OldPassword" class="form-label text-black">Mật khẩu cũ</label>
+                        <input type="password" name="OldPassword" class="form-control custom-input" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NewPassword" class="form-label text-black">Mật khẩu mới</label>
+                        <input type="password" name="NewPassword" class="form-control custom-input" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ConfirmPassword" class="form-label text-black">Nhập lại mật khẩu mới</label>
+                        <input type="password" name="ConfirmPassword" class="form-control custom-input" required />
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-light btn-custom">Lưu mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+        }
+
+    </div>
+</div>
+
+<style>
+   
+    
+    .edit-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #6b48ff, #00d4ff);
+        padding: 20px;
+    }
+
+    .edit-card {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        max-width: 500px;
+        width: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .edit-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .bg-glass {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .custom-input {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        padding: 10px;
+        transition: background 0.3s ease;
+      
+    }
+
+    .custom-input:focus {
+        background: rgba(255, 255, 255, 0.3);
+        outline: none;
+    }
+
+    .profile-img-edit {
+        transition: transform 0.3s ease;
+    }
+
+    .profile-img-edit:hover {
+        transform: rotate(-5deg) scale(1.1);
+    }
+
+    .btn-custom {
+        background: #fff;
+        color: #ff6b6b;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+
+    }
+
+    .btn-custom:hover {
+        background: #ff6b6b;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .animate__animated {
+        animation-duration: 0.6s;
+    }
+    
+</style>
+<script>
+    function togglePasswordForm() {
+        var form = document.getElementById("passwordForm");
+        form.style.display = (form.style.display === "none") ? "block" : "none";
+    }
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />

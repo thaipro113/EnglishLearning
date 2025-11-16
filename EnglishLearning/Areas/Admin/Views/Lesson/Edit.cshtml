@@ -1,0 +1,546 @@
+﻿@model EnglishLearning.Models.Lesson
+@{
+    ViewData["Title"] = "Cập nhật bài học";
+    Layout = "~/Areas/Admin/Views/Shared/Temp.cshtml";
+}
+
+<style>
+    .custom-title {
+        background: linear-gradient(90deg, #4b6cb7, #182848) !important;
+        color: white !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
+        font-weight: 600;
+    }
+    .custom-card {
+        background: white;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+        margin-top: 20px;
+    }
+    .custom-form .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 6px;
+    }
+    .custom-form .form-control,
+    .custom-form .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #ced4da;
+        padding: 10px 12px;
+        transition: all 0.3s ease;
+    }
+    .custom-form .form-control:focus,
+    .custom-form .form-select:focus {
+        border-color: #4b6cb7;
+        box-shadow: 0 0 0 0.2rem rgba(75, 108, 183, 0.25);
+    }
+    .custom-btn-success {
+        background: linear-gradient(90deg, #28a745, #1e7e34) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 24px !important;
+        font-weight: 600;
+    }
+        .custom-btn-success:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #1e7e34, #155724) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+    .custom-btn-secondary {
+        background: linear-gradient(90deg, #6c757d, #495057) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+        border-radius: 8px !important;
+        padding: 10px 24px !important;
+        font-weight: 600;
+    }
+        .custom-btn-secondary:hover {
+            transform: translateY(-2px) !important;
+            background: linear-gradient(90deg, #495057, #343a40) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        }
+    .part-title {
+        background: #e9ecef;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        color: #495057;
+        margin: 20px 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .quiz-item {
+        background: #f8f9fa;
+        border: 1.5px solid #dee2e6 !important;
+        border-radius: 10px !important;
+        padding: 16px;
+        margin-bottom: 16px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    .quiz-item:hover {
+        border-color: #4b6cb7;
+        box-shadow: 0 2px 8px rgba(75, 108, 183, 0.15);
+    }
+    .remove-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #dc3545;
+        color: white;
+        border: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    .remove-btn:hover {
+        background: #c82333;
+        transform: scale(1.1);
+    }
+    .add-quiz-btn {
+        background: linear-gradient(90deg, #17a2b8, #117a8b) !important;
+        color: white !important;
+        border: none !important;
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-weight: 600;
+    }
+    .add-quiz-btn:hover {
+        background: linear-gradient(90deg, #117a8b, #0c5460) !important;
+        transform: translateY(-1px);
+    }
+    .current-file {
+        font-size: 0.875rem;
+        color: #007bff;
+        margin-top: 4px;
+    }
+    .current-file a {
+        color: #007bff;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center custom-title">
+        <i class="fas fa-edit"></i> @ViewData["Title"]
+    </h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p class="mb-1">@error.ErrorMessage</p>
+            }
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="custom-card">
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" class="custom-form">
+                <input type="hidden" asp-for="LessonId" />
+                <input type="hidden" asp-for="LessonType" />
+
+                <!-- === THÔNG TIN CHUNG === -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Title" class="form-label">
+                            @(Model.LessonType == "TOEIC" ? "Tiêu đề đề thi" : "Tiêu đề")
+                        </label>
+                        <input asp-for="Title" class="form-control" required />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CourseId" class="form-label">Khóa học</label>
+                        <select asp-for="CourseId" class="form-select" asp-items="ViewBag.Courses" required>
+                            <option value="">-- Chọn khóa học --</option>
+                        </select>
+                        <span asp-validation-for="CourseId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label asp-for="OrderIndex" class="form-label">Thứ tự</label>
+                        <input asp-for="OrderIndex" class="form-control" type="number" min="1" required />
+                        <span asp-validation-for="OrderIndex" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="VideoUrl" class="form-label">Video URL</label>
+                        <input asp-for="VideoUrl" class="form-control" placeholder="https://youtube.com/..." />
+                        <span asp-validation-for="VideoUrl" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label asp-for="Content" class="form-label">
+                        @(Model.LessonType == "TOEIC" ? "Ghi chú" : "Nội dung")
+                    </label>
+                    <textarea asp-for="Content" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+                @if (Model.LessonType == "TOEIC")
+                {
+                    <!-- Audio chung -->
+                    <div class="part-title mt-4">
+                        <i class="fas fa-headphones"></i> Phần Listening - Audio chung
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">File âm thanh</label>
+                        <input type="file" name="AudioFile" accept="audio/*" class="form-control" />
+                        @if (!string.IsNullOrEmpty(Model.AudioPath))
+                        {
+                            <div class="current-file">
+                                Hiện tại: <a href="@Model.AudioPath" target="_blank">@System.IO.Path.GetFileName(Model.AudioPath)</a>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Part 1: Photographs -->
+                    <div class="part-title">
+                        <i class="fas fa-image"></i> Part 1: Photographs (6 câu)
+                    </div>
+                    <p class="text-muted small mb-3">Nghe 4 câu mô tả → chọn đúng với hình</p>
+                    <div id="part1-quizzes">
+                        @for (int i = 0; i < 6; i++)
+                        {
+                            var quiz = Model.Quizzes.ElementAtOrDefault(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@(quiz?.QuizId ?? 0)" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@(quiz?.Question ?? "")" placeholder="Câu hỏi..." />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Hình ảnh</label>
+                                        <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" />
+                                        @if (!string.IsNullOrEmpty(quiz?.ImagePath))
+                                        {
+                                            <div class="current-file">
+                                                <a href="@quiz.ImagePath" target="_blank">Xem ảnh hiện tại</a>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@(quiz?.OptionA ?? "")" /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@(quiz?.OptionB ?? "")" /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@(quiz?.OptionC ?? "")" /></div>
+                                    <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" value="@(quiz?.OptionD ?? "")" /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@(quiz?.CorrectAnswer ?? "")" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Part 2: Question-Response -->
+                    <div class="part-title">
+                        <i class="fas fa-comments"></i> Part 2: Question-Response (25 câu)
+                    </div>
+                    <p class="text-muted small mb-3">Nghe câu hỏi → chọn đáp án phù hợp</p>
+                    <div id="part2-quizzes">
+                        @for (int i = 6; i < 31; i++)
+                        {
+                            var quiz = Model.Quizzes.ElementAtOrDefault(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@(quiz?.QuizId ?? 0)" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@(quiz?.Question ?? "")" />
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@(quiz?.OptionA ?? "")" /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@(quiz?.OptionB ?? "")" /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@(quiz?.OptionC ?? "")" /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@(quiz?.CorrectAnswer ?? "")" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Part 3: Conversations -->
+                    <div class="part-title">
+                        <i class="fas fa-users"></i> Part 3: Conversations (39 câu)
+                    </div>
+                    <p class="text-muted small mb-3">Nghe hội thoại → trả lời câu hỏi</p>
+                    <div id="part3-quizzes">
+                        @for (int i = 31; i < 70; i++)
+                        {
+                            var quiz = Model.Quizzes.ElementAtOrDefault(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@(quiz?.QuizId ?? 0)" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@(quiz?.Question ?? "")" />
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@(quiz?.OptionA ?? "")" /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@(quiz?.OptionB ?? "")" /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@(quiz?.OptionC ?? "")" /></div>
+                                    <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" value="@(quiz?.OptionD ?? "")" /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@(quiz?.CorrectAnswer ?? "")" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Part 4: Talks -->
+                    <div class="part-title">
+                        <i class="fas fa-microphone"></i> Part 4: Talks (30 câu)
+                    </div>
+                    <p class="text-muted small mb-3">Nghe bài nói → trả lời câu hỏi</p>
+                    <div id="part4-quizzes">
+                        @for (int i = 70; i < 100; i++)
+                        {
+                            var quiz = Model.Quizzes.ElementAtOrDefault(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@(quiz?.QuizId ?? 0)" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@(quiz?.Question ?? "")" />
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@(quiz?.OptionA ?? "")" /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@(quiz?.OptionB ?? "")" /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@(quiz?.OptionC ?? "")" /></div>
+                                    <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" value="@(quiz?.OptionD ?? "")" /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@(quiz?.CorrectAnswer ?? "")" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Part 5: Incomplete Sentences -->
+                    <div class="part-title">
+                        <i class="fas fa-pen"></i> Part 5: Incomplete Sentences (30 câu)
+                    </div>
+                    <p class="text-muted small mb-3">Điền từ vào câu thiếu</p>
+                    <div id="part5-quizzes">
+                        @for (int i = 100; i < 130; i++)
+                        {
+                            var quiz = Model.Quizzes.ElementAtOrDefault(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@(quiz?.QuizId ?? 0)" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@(quiz?.Question ?? "")" />
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@(quiz?.OptionA ?? "")" /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@(quiz?.OptionB ?? "")" /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@(quiz?.OptionC ?? "")" /></div>
+                                    <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" value="@(quiz?.OptionD ?? "")" /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@(quiz?.CorrectAnswer ?? "")" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Part 6: Text Completion -->
+                    <div class="part-title">
+                        <i class="fas fa-align-left"></i> Part 6: Text Completion (16 câu)
+                    </div>
+                    <p class="text-muted small mb-3">Hoàn thành đoạn văn</p>
+                    <div id="part6-quizzes">
+                        @for (int i = 130; i < 146; i++)
+                        {
+                             var quiz = Model.Quizzes.ElementAtOrDefault(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@(quiz?.QuizId ?? 0)" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@(quiz?.Question ?? "")" placeholder="Câu hỏi..." />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Hình ảnh</label>
+                                        <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" />
+                                        @if (!string.IsNullOrEmpty(quiz?.ImagePath))
+                                        {
+                                            <div class="current-file">
+                                                <a href="@quiz.ImagePath" target="_blank">Xem ảnh hiện tại</a>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@(quiz?.OptionA ?? "")" /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@(quiz?.OptionB ?? "")" /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@(quiz?.OptionC ?? "")" /></div>
+                                    <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" value="@(quiz?.OptionD ?? "")" /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@(quiz?.CorrectAnswer ?? "")" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Part 7: Reading Comprehension -->
+                    <div class="part-title">
+                        <i class="fas fa-book"></i> Part 7: Reading Comprehension (54 câu)
+                    </div>
+                    <p class="text-muted small mb-3">Đọc hiểu → trả lời câu hỏi</p>
+                    <div id="part7-quizzes">
+                        @for (int i = 146; i < 200; i++)
+                        {
+                             var quiz = Model.Quizzes.ElementAtOrDefault(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@(quiz?.QuizId ?? 0)" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@(quiz?.Question ?? "")" placeholder="Câu hỏi..." />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Hình ảnh</label>
+                                        <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" />
+                                        @if (!string.IsNullOrEmpty(quiz?.ImagePath))
+                                        {
+                                            <div class="current-file">
+                                                <a href="@quiz.ImagePath" target="_blank">Xem ảnh hiện tại</a>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@(quiz?.OptionA ?? "")" /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@(quiz?.OptionB ?? "")" /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@(quiz?.OptionC ?? "")" /></div>
+                                    <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" value="@(quiz?.OptionD ?? "")" /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@(quiz?.CorrectAnswer ?? "")" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <!-- BÀI HỌC THƯỜNG -->
+                    <div class="part-title mt-4">
+                        <i class="fas fa-question-circle"></i> Câu hỏi trắc nghiệm
+                    </div>
+                    <div id="quiz-list">
+                        @for (int i = 0; i < Model.Quizzes.Count; i++)
+                        {
+                            var quiz = Model.Quizzes.ElementAt(i);
+                            <div class="quiz-item" data-index="@i">
+                                <input type="hidden" name="Quizzes[@i].QuizId" value="@quiz.QuizId" />
+                                <input type="hidden" name="Quizzes[@i].LessonId" value="@Model.LessonId" />
+                                <input type="hidden" name="Quizzes[@i].IsDeleted" value="false" />
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold text-success">Câu @(i + 1)</label>
+                                        <input name="Quizzes[@i].Question" class="form-control" value="@quiz.Question" required />
+                                    </div>
+                                    <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" value="@quiz.OptionA" required /></div>
+                                    <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" value="@quiz.OptionB" required /></div>
+                                    <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" value="@quiz.OptionC" required /></div>
+                                    <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" value="@quiz.OptionD" required /></div>
+                                    <div class="col-12">
+                                        <label class="text-danger">Đáp án đúng</label>
+                                        <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="@quiz.CorrectAnswer" required />
+                                    </div>
+                                </div>
+                                <button type="button" class="remove-btn" onclick="removeQuiz(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    <button type="button" class="btn add-quiz-btn" onclick="addQuiz()">
+                        <i class="fas fa-plus"></i> Thêm câu hỏi
+                    </button>
+                }
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button style="margin:0 5px;" type="submit" class="btn custom-btn-success">
+                        <i class="fas fa-save"></i> Lưu thay đổi
+                    </button>
+                    <a asp-action="Index" class="btn custom-btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        let quizIndex = @(Model.LessonType == "TOEIC" ? 0 : Model.Quizzes.Count - 1);
+
+        function addQuiz() {
+            quizIndex++;
+            const container = document.getElementById("quiz-list");
+            const html = `
+                <div class="quiz-item" data-index="${quizIndex}">
+                    <input type="hidden" name="Quizzes[${quizIndex}].QuizId" value="0" />
+                    <input type="hidden" name="Quizzes[${quizIndex}].LessonId" value="@Model.LessonId" />
+                    <input type="hidden" name="Quizzes[${quizIndex}].IsDeleted" value="false" />
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-success">Câu ${quizIndex + 1}</label>
+                            <input name="Quizzes[${quizIndex}].Question" class="form-control" required />
+                        </div>
+                        <div class="col-md-6"><label>A</label><input name="Quizzes[${quizIndex}].OptionA" class="form-control" required /></div>
+                        <div class="col-md-6"><label>B</label><input name="Quizzes[${quizIndex}].OptionB" class="form-control" required /></div>
+                        <div class="col-md-6"><label>C</label><input name="Quizzes[${quizIndex}].OptionC" class="form-control" required /></div>
+                        <div class="col-md-6"><label>D</label><input name="Quizzes[${quizIndex}].OptionD" class="form-control" required /></div>
+                        <div class="col-12">
+                            <label class="text-danger">Đáp án đúng</label>
+                            <input name="Quizzes[${quizIndex}].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" required />
+                        </div>
+                    </div>
+                    <button type="button" class="remove-btn" onclick="removeQuiz(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>`;
+            container.insertAdjacentHTML("beforeend", html);
+        }
+
+        function removeQuiz(btn) {
+            const item = btn.closest(".quiz-item");
+            const del = item.querySelector("input[name*='IsDeleted']");
+            if (del) del.value = "true";
+            item.style.display = "none";
+        }
+    </script>
+}

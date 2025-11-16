@@ -1,0 +1,84 @@
+﻿
+    body {
+        background: linear-gradient(135deg, #e0e7ff, #ffffff);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #007bff, #00d4ff);
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(45deg, #17a2b8, #3df1ff);
+    }
+
+    .card-header {
+        padding: 1.5rem;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .table {
+        margin-bottom: 0;
+        background-color: #fff;
+    }
+
+        .table th, .table td {
+            padding: 1.2rem;
+            vertical-align: middle;
+            transition: background-color 0.3s ease;
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+        cursor: pointer;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.6em 1.2em;
+        border-radius: 20px;
+        transition: transform 0.2s ease;
+    }
+
+        .badge:hover {
+            transform: scale(1.1);
+        }
+
+    .btn-light {
+        background-color: #fff;
+        color: #007bff;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .btn-light:hover {
+            background-color: #e0e7ff;
+            transform: scale(1.05);
+        }
+
+    @media (max-width: 768px) {
+        .card-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .btn-sm {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .table th, .table td {
+            padding: 0.8rem;
+            font-size: 0.9rem;
+        }
+    }
+

@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Step 2 - Chọn vai trò học tập";
+    Layout = "~/Views/Shared/_StepLayout.cshtml";
+}
+<link href="~/css/step.css" rel="stylesheet" />
+
+<div class="step-container">
+    <div class="progress-container mb-4" style="height: 25px;">
+        <div class="progress" style="height: 25px;">
+            <div id="stepProgressBar"
+                 class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                 role="progressbar"
+                 style="width: 66.66%">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="step-card">
+        <h2 class="step-title"><i class="bi bi-person-fill"></i> Bước 2: Chọn vai trò học tập</h2>
+        @if (!string.IsNullOrEmpty(ViewBag.Error))
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+        <form id="step2Form" asp-controller="Account" asp-action="Step2" method="post">
+            <div class="option-grid" id="roleOptions">
+                @foreach (var role in ViewBag.Occupations as List<string>)
+                {
+                    <div class="option-item" data-value="@role" role="button" tabindex="0">
+                        <span class="option-label">@role</span>
+                    </div>
+                }
+            </div>
+            <button type="submit" class="btn btn-next" id="nextButton" disabled>
+                Tiếp tục <i class="bi bi-arrow-right-circle-fill"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const optionsContainer = document.getElementById('roleOptions');
+        const form = document.getElementById('step2Form');
+        const nextButton = document.getElementById('nextButton');
+        const progressBar = document.getElementById('stepProgressBar');
+
+        if (progressBar) {
+            progressBar.style.width = '66.66%';
+
+        }
+
+        // hidden input để gửi giá trị chọn
+        let hiddenInput = document.getElementById('selectedRole');
+        if (!hiddenInput) {
+            hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.id = 'selectedRole';
+            hiddenInput.name = 'role';
+            form.appendChild(hiddenInput);
+        }
+
+        // CLICK chọn vai trò
+        optionsContainer.addEventListener('click', function (e) {
+            const item = e.target.closest('.option-item');
+            if (!item) return;
+            e.preventDefault();
+
+            optionsContainer.querySelectorAll('.option-item')
+                .forEach(i => i.classList.remove('selected'));
+
+            item.classList.add('selected');
+            hiddenInput.value = item.dataset.value || '';
+            nextButton.disabled = false;
+        });
+
+        // hỗ trợ Enter / Space
+        optionsContainer.addEventListener('keydown', function (e) {
+            const item = e.target.closest('.option-item');
+            if (!item) return;
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                item.click();
+            }
+        });
+
+        // SUBMIT form
+        form.addEventListener('submit', function (e) {
+            if (!optionsContainer.querySelector('.option-item.selected')) {
+                e.preventDefault();
+                alert('Vui lòng chọn vai trò học tập!');
+                return;
+            }
+            nextButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang xử lý...';
+        });
+    });
+</script>
+<style>
+   
+    .step-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 30px;
+        width: 100%;
+        max-width: 650px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .option-grid {
+        display: flex;
+        flex-wrap: wrap; /* Cho phép xuống dòng khi cần */
+        gap: 15px; /* Khoảng cách giữa các ô */
+        margin-bottom: 20px;
+    }
+
+    .option-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+</style>

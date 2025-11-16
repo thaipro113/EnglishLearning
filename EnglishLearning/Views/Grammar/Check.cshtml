@@ -1,0 +1,113 @@
+﻿@model GrammarCheckViewModel
+@{
+    ViewData["Title"] = "Kiểm tra ngữ pháp tiếng Anh";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+<link href="~/css/grammar.css" rel="stylesheet" />
+<div class="grammar-container">
+    <h2 class="grammar-title">Kiểm tra ngữ pháp tiếng Anh</h2>
+    <form method="post" class="grammar-form" id="grammarForm">
+        <textarea name="InputText" rows="8" class="grammar-textarea" placeholder="Nhập vào đây một đoạn văn hoặc một câu ngữ pháp để mình kiểm tra lỗi nha...">@Model.InputText</textarea>
+        <br />
+        <button type="submit" class="grammar-submit-btn">Kiểm tra ngữ pháp</button>
+    </form>
+
+    @if (Model.Errors != null && Model.Errors.Count > 0)
+    {
+        <div class="grammar-result error fade-in">
+            <h3>Kết quả:</h3>
+            <ul>
+                @foreach (var error in Model.Errors)
+                {
+                    var parts = error.Split(new string[] { "(Gợi ý: " }, StringSplitOptions.None);
+                    <li>
+                        @parts[0]
+                        @if (parts.Length > 1)
+                        {
+                            <span class="suggestion-text">@($"(Gợi ý sửa lỗi: {parts[1].TrimEnd()}")</span>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.CorrectedText) && Model.CorrectedText != Model.InputText)
+        {
+            <div class="grammar-result success fade-in">
+                <h3>Văn bản đã sửa:</h3>
+                <p><span id="corrected-text" class="corrected-text-container"></span></p>
+            </div>
+        }
+    }
+    else if (!string.IsNullOrEmpty(Model.InputText))
+    {
+        <div class="grammar-result success fade-in">
+            <p><strong>Không phát hiện lỗi nào! Đoạn văn của bạn đúng hoàn toàn về ngữ pháp và cách trình bày</strong></p>
+        </div>
+    }
+</div>
+
+<script>
+    document.getElementById('grammarForm').addEventListener('submit', function (e) {
+        const textarea = document.querySelector('.grammar-textarea');
+        if (!textarea.value.trim()) {
+            e.preventDefault();
+            alert('Vui lòng nhập văn bản để kiểm tra!');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const correctedTextContainer = document.getElementById('corrected-text');
+        if (correctedTextContainer && @Html.Raw(Json.Serialize(Model?.ErrorDetails ?? new List<ErrorDetail>()))) {
+            const errorDetails = @Html.Raw(Json.Serialize(Model?.ErrorDetails ?? new List<ErrorDetail>()));
+            const correctedText = '@Html.Raw(Model.CorrectedText ?? "")'.replace(/"/g, '&quot;');
+            const originalText = '@Html.Raw(Model.InputText ?? "")'.replace(/"/g, '&quot;');
+
+            let segments = [];
+            let lastPos = 0;
+            let offsetAdjustment = 0;
+
+            // Sắp xếp lỗi theo offset tăng dần
+            errorDetails.sort((a, b) => a.OriginalOffset - b.OriginalOffset);
+
+            errorDetails.forEach(detail => {
+                if (detail.IsCorrected) {
+                    // Vị trí lỗi gốc (dựa trên văn bản gốc)
+                    let originalStart = detail.OriginalOffset;
+                    let originalEnd = originalStart + detail.OriginalLength;
+
+                    // Vị trí đã sửa (dựa trên văn bản đã sửa)
+                    let correctedStart = detail.CorrectedOffset + offsetAdjustment;
+                    let correctedEnd = correctedStart + detail.CorrectedLength;
+
+                    // Thêm đoạn trước lỗi
+                    if (originalStart > lastPos) {
+                        segments.push(correctedText.substring(lastPos + offsetAdjustment, originalStart + offsetAdjustment));
+                    }
+
+                    // Thêm đoạn đã sửa (tô màu, bỏ gạch chân lỗi gốc)
+                    let correctedSegment = correctedText.substring(correctedStart, correctedEnd);
+                    segments.push(`<span class="corrected-text-fixed">${correctedSegment}</span>`);
+
+                    // Cập nhật lastPos và offsetAdjustment
+                    lastPos = originalEnd;
+                    offsetAdjustment += (detail.CorrectedLength - detail.OriginalLength);
+                }
+            });
+
+            // Thêm phần còn lại của văn bản
+            if (lastPos < originalText.length) {
+                segments.push(correctedText.substring(lastPos + offsetAdjustment));
+            }
+
+            // Ghép các đoạn lại
+            correctedTextContainer.innerHTML = segments.join('');
+        }
+
+        const resultDiv = document.querySelector('.grammar-result');
+        if (resultDiv) {
+            resultDiv.classList.add('fade-in');
+            setTimeout(() => resultDiv.classList.add('active'), 10);
+        }
+    });
+</script>

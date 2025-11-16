@@ -1,0 +1,137 @@
+﻿
+body {
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+.bg-gradient {
+    background: linear-gradient(135deg, #2196f3, #21cbf3);
+}
+
+.chatbox {
+    max-height: 400px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    scroll-behavior: smooth; /* Cuộn mượt mà */
+}
+
+.message-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Khoảng cách giữa các câu */
+}
+
+.message {
+    padding: 12px 18px;
+    border-radius: 10px;
+    max-width: 80%;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 15px; /* Khoảng cách bổ sung */
+}
+
+.bot-message {
+    background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+    align-self: flex-start;
+    border: 1px solid #4fc3f7;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    align-self: flex-end;
+    border: 1px solid #ef5350;
+}
+
+.loading-message {
+    background: #fff3e0;
+    color: #ef6c00;
+    align-self: center;
+    font-style: italic;
+}
+
+.form-control {
+    background-color: #f8f9fa;
+    border: 2px solid #e0e7ff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #2196f3;
+        box-shadow: 0 0 0 0.25rem rgba(33, 150, 243, 0.25);
+    }
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #7cff8e);
+    border: none;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .btn-success:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+    }
+
+.btn-outline-info {
+    border-color: rgb(40, 120, 235);
+    color: rgb(40, 120, 235);
+    font-weight: 600;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+    .btn-outline-info:hover {
+        background-color: rgb(40, 120, 235);
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+.btn-primary {
+    background: linear-gradient(45deg, #2196f3, #21cbf3);
+    border: none;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+    }
+
+@media (max-width: 768px) {
+    .card-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn-lg {
+        font-size: 0.9rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .form-control {
+        font-size: 0.9rem;
+    }
+
+    .message {
+        max-width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .chatbox {
+        max-height: 300px;
+    }
+}

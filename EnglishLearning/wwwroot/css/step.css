@@ -1,0 +1,283 @@
+﻿
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.step-card {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 40px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    text-align: center !important;
+    animation: fadeInUp 0.6s ease-out !important;
+    border: 2px solid #e0e7ff !important;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-card h2 {
+    font-size: 28px !important;
+    margin-bottom: 25px !important;
+    color: #2c3e50 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+    .step-card h2 i {
+        margin-right: 10px !important;
+        color: #3498db !important;
+        animation: bounce 1.5s infinite !important;
+    }
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.option-list {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    margin-bottom: 30px !important;
+    padding: 20px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 15px !important;
+}
+
+.option-item {
+    padding: 12px 25px !important;
+    background: #ecf0f1 !important;
+    border: 2px solid #bdc3c7 !important;
+    border-radius: 30px !important;
+    cursor: pointer !important;
+    transition: all 0.4s ease !important;
+    font-size: 16px !important;
+    color: #34495e !important;
+    font-weight: 500 !important;
+    text-transform: capitalize !important;
+}
+
+    .option-item:hover {
+        background: linear-gradient(90deg, #2980b9, #2980b9) !important;
+        color: #fff !important;
+        border-color: #8e44ad !important;
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4) !important;
+
+    }
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-next {
+    padding: 12px 35px !important;
+    width:80%;
+    background: linear-gradient(90deg, #3498db, #2980b9) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 30px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.4s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+    .btn-next:hover {
+        background: linear-gradient(90deg, #2980b9, #1abc9c) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4) !important;
+    }
+
+        .btn-next:hover::after {
+            content: '' !important;
+            position: absolute !important;
+            width: 100% !important;
+            height: 100% !important;
+            top: 0 !important;
+            left: -100% !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            animation: shine 1s forwards !important;
+        }
+
+@keyframes shine {
+    to {
+        left: 100%;
+    }
+}
+
+.btn-next:disabled {
+    background: #bdc3c7 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-next i {
+    margin-left: 8px !important;
+    transition: margin-left 0.3s ease !important;
+}
+
+.btn-next:hover i {
+    margin-left: 12px !important;
+}
+
+.spinner-border {
+    margin-right: 8px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .step-card {
+        margin: 30px 15px !important;
+        padding: 20px !important;
+    }
+
+        .step-card h2 {
+            font-size: 22px !important;
+        }
+
+    .option-item {
+        padding: 10px 15px !important;
+        font-size: 14px !important;
+    }
+
+    .btn-next {
+        padding: 10px 25px !important;
+        font-size: 14px !important;
+    }
+}
+
+
+
+.step-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background: rgb(135, 168, 198);
+    padding: 20px;
+}
+
+.progress-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+
+
+.step-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.step-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.option-grid {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.option-item {
+    display: flex;
+    flex-direction: column; /* Đã thêm: Stack các phần tử con theo chiều dọc */
+    justify-content: center; /* Đã thêm: Căn giữa nội dung theo chiều dọc */
+    align-items: flex-start; /* Đã sửa: Căn trái các phần tử con */
+    padding: 15px 20px; /* Đã sửa: Tăng padding để có nhiều không gian hơn */
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .option-item:hover {
+        background: #f0f0f0;
+        border-color: rgb(53, 116, 231);
+    }
+
+    .option-item.selected {
+        background: rgb(53, 116, 231) !important;
+        border-color: rgb(53, 116, 231) !important;
+        color: #fff !important;
+    }
+
+
+/* Đã thêm: Style riêng cho tiêu đề và mô tả */
+.option-main-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.option-sub-label {
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.2;
+    color: black; /* Màu chữ mờ hơn cho phần mô tả */
+}
+
+/* Đã thêm: Điều chỉnh màu chữ của sub-label khi được chọn */
+.option-item.selected .option-sub-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.alert {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+

@@ -1,0 +1,164 @@
+﻿.test-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in;
+}
+
+.question-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-left: 5px solid #4CAF50;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .question-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .question-item strong {
+        color: #333;
+        font-size: 1.2em;
+    }
+
+.option-label {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+    .option-label:hover {
+        background: #f1f1f1;
+    }
+
+    .option-label input[type="radio"] {
+        margin-right: 10px;
+    }
+
+.submit-btn {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .submit-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+
+.print-btn {
+    background: linear-gradient(90deg, #2196F3, #1976D2);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+    .print-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* CSS cho chế độ in */
+@media print {
+    body {
+        background: #fff;
+        color: #000;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Ẩn header và footer từ layout */
+    .container-fluid.bg-dark, /* Topbar */
+    nav.navbar, /* Navbar */
+    .container-fluid.position-relative.overlay-top.bg-dark, /* Footer */
+    a[href]:after,
+    .back-to-topp{ /* Ẩn thuộc tính href trong anchor */
+        display: none !important;
+    }
+
+    .test-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+   .question-item {
+    margin: 10px 0;
+    padding: 10px;
+    background: #fff;
+    border: none !important; /* ❌ Bỏ gạch dưới và viền */
+    border-radius: 0;
+    page-break-inside: avoid;
+}
+
+
+        .question-item strong {
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+    .option-label {
+        margin: 5px 0;
+        padding: 5px;
+        background: #fff;
+        border: none; /* Xóa tất cả border */
+        border-radius: 0;
+    }
+
+        .option-label input[type="radio"] {
+            display: none;
+        }
+
+    .print-btn, .submit-btn, #timer, .text-center.mb-4, .print-title {
+        display: none;
+    }
+
+    .print-title {
+        display: block !important;
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .question-item strong::before {
+        content: "";
+        counter-increment: question;
+    }
+
+    /* Xóa dấu gạch trước đáp án */
+    .option-label::before {
+        content:attr(data-option)" "; /* Loại bỏ content để xóa dấu gạch */
+    }
+}

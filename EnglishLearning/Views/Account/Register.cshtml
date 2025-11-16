@@ -1,0 +1,116 @@
+﻿@model EnglishLearning.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+<link href="~/css/register.css" rel="stylesheet" />
+<div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="card glass-effect rounded-4 p-5 shadow" style="max-width: 500px; width: 100%;">
+        <h3 class="card-title text-center mb-4 fs-3 fw-bold text-dark">Đăng ký tài khoản</h3>
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger text-center mb-4" role="alert">@ViewBag.Error</div>
+        }
+        <form asp-action="Register" method="post" class="row g-4">
+            <div class="col-12">
+                <label asp-for="Username" class="form-label fs-6 text-dark fw-medium">Tên đăng nhập</label>
+                <input asp-for="Username" id="username" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Nhập tên đăng nhập" required />
+                <span asp-validation-for="Username" class="text-danger small mt-1 d-block"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="FullName" class="form-label fs-6 text-dark fw-medium">Họ và tên</label>
+                <input asp-for="FullName" id="fullName" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Nhập họ và tên" required />
+                <span asp-validation-for="FullName" class="text-danger small mt-1 d-block"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="PhoneNumber" class="form-label fs-6 text-dark fw-medium">Số điện thoại</label>
+                <input asp-for="PhoneNumber" id="phoneNumber" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Nhập số điện thoại" required />
+                <span asp-validation-for="PhoneNumber" class="text-danger small mt-1 d-block"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Email" class="form-label fs-6 text-dark fw-medium">Email</label>
+                <input asp-for="Email" id="email" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Nhập email của bạn" required />
+                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Password" class="form-label fs-6 text-dark fw-medium">Mật khẩu</label>
+                <div class="position-relative">
+                    <input asp-for="Password" type="password" id="registerPassword" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Tạo mật khẩu mạnh" required />
+                    <button style="border:none;background-color: transparent;" type="button" onclick="togglePassword('registerPassword')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors">👁️</button>
+                </div>
+                <div class="text-muted small mt-2">
+                    Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số
+                </div>
+                <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="ConfirmPassword" class="form-label fs-6 text-dark fw-medium">Xác nhận mật khẩu</label>
+                <div class="position-relative">
+                    <input asp-for="ConfirmPassword" type="password" id="confirmPassword" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Nhập lại mật khẩu" required />
+                    <button style="border:none;background-color: transparent;" type="button" onclick="togglePassword('confirmPassword')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors">👁️</button>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
+            </div>
+            <div class="col-12">
+                <label class="form-check d-flex align-items-start">
+                    <input type="checkbox" class="form-check-input mt-1 me-2" required />
+                    <span class="form-check-label mt-1 text-muted small">
+                        Tôi đồng ý với <a href="#" class="text-primary hover-text-primary-dark">Điều khoản dịch vụ</a> và <a href="#" class="text-primary hover-text-primary-dark">Chính sách bảo mật</a>
+                    </span>
+                </label>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+            </div>
+            <div class="col-12 text-center mt-3">
+                <p class="text-muted small">
+                    Đã có tài khoản? <a href="@Url.Action("Login", "Account")" class="text-primary hover-text-primary-dark transition-colors">Đăng nhập</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentElement.classList.add('transform', 'scale-105');
+            });
+            input.addEventListener('blur', function () {
+                this.parentElement.classList.remove('transform', 'scale-105');
+            });
+        });
+
+        document.querySelectorAll('button[type="submit"]').forEach(button => {
+            button.addEventListener('click', function (e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+   
+}

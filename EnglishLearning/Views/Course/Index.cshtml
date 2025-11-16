@@ -1,0 +1,107 @@
+﻿@model IEnumerable<EnglishLearning.Models.Course>
+
+@{
+    ViewData["Title"] = "Danh sách khóa học";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+
+<!-- CSS nâng cấp -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+
+<style>
+    .course-card {
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        border-radius: 15px;
+        overflow: hidden;
+        background: #fff;
+        position: relative;
+    }
+
+    .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .course-icon {
+        font-size: 2.5rem;
+        color: #4e73df;
+        margin-bottom: 15px;
+    }
+
+    .course-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #2c3e50;
+    }
+
+    .course-desc {
+        font-size: 0.95rem;
+        color: #6c757d;
+        min-height: 60px;
+    }
+
+    .course-level {
+        margin-top: 10px;
+    }
+
+    .badge-level {
+        background-color: #ffc107;
+        color: #212529;
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+
+    .btn-detail {
+        transition: 0.3s;
+    }
+
+        .btn-detail:hover {
+            transform: scale(1.05);
+            background-color: #007bff;
+            color: white;
+        }
+
+    .card-body {
+        padding: 25px;
+    }
+</style>
+
+<!-- HTML hiển thị -->
+<div class="container mt-5">
+    <h2 class="text-center mb-5" data-aos="fade-down" data-aos-delay="100">📚 Khóa học dành cho bạn</h2>
+
+    <div class="row">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="200">
+                <div class="card course-card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="course-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h5 class="course-title">@course.Title</h5>
+                        <p class="course-desc">@course.Description</p>
+
+                        <div class="course-level">
+                            <span class="badge badge-level">
+                                Cấp độ: @course.SubLevel.Level.LevelName - @course.SubLevel.SubLevelName
+                            </span>
+                        </div>
+                        <a asp-controller="Course" asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-outline-primary btn-sm mt-3 btn-detail"> Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- JS AOS hiệu ứng -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true
+    });
+</script>

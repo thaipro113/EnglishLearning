@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>@ViewData["Title"] TLEnglish</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <link rel="shortcut icon" href="https://icon-library.com/images/english-icon-png/english-icon-png-9.jpg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/css/topfoot.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="index.html" class="navbar-brand ml-lg-3">
+                <a asp-controller="Home" asp-action="Index" style="text-decoration:none">
+                    <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>TLEnglish</h1>
+                </a>
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    <a asp-controller="Home" asp-action="Index" class="nav-item nav-link @((ViewContext.RouteData.Values["Controller"].ToString() == "Home" && ViewContext.RouteData.Values["Action"].ToString() == "Index") ? "active" : "")">Home</a>
+                    <a asp-controller="About" asp-action="Index" class="nav-item nav-link @((ViewContext.RouteData.Values["Controller"].ToString() == "About" && ViewContext.RouteData.Values["Action"].ToString() == "Index") ? "active" : "")">About</a>
+                    <a asp-controller="Course" asp-action="Index" class="nav-item nav-link @((ViewContext.RouteData.Values["Controller"].ToString() == "Course" && ViewContext.RouteData.Values["Action"].ToString() == "Index") ? "active" : "")">Courses</a>
+                    <a asp-controller="Chatbot" asp-action="Index" class="nav-item nav-link @((ViewContext.RouteData.Values["Controller"].ToString() == "Chatbot" && ViewContext.RouteData.Values["Action"].ToString() == "Index") ? "active" : "")">Assistant AI</a>
+                    <a asp-controller="Dictionary" asp-action="Index" class="nav-item nav-link @((ViewContext.RouteData.Values["Controller"].ToString() == "Dictionary" && ViewContext.RouteData.Values["Action"].ToString() == "Index") ? "active" : "")">Dictionary</a>
+                    <a asp-controller="Grammar" asp-action="Check" class="nav-item nav-link @((ViewContext.RouteData.Values["Controller"].ToString() == "Grammar" && ViewContext.RouteData.Values["Action"].ToString() == "Check") ? "active" : "")">Grammar Check</a>
+                    <a asp-controller="Translation" asp-action="SelectLevel" class="nav-item nav-link @((ViewContext.RouteData.Values["Controller"].ToString() == "Translation" && ViewContext.RouteData.Values["Action"].ToString() == "SelectLevel") ? "active" : "")">Translation Practice</a>
+                </div>
+                @using Microsoft.AspNetCore.Http
+                @inject IHttpContextAccessor HttpContextAccessor
+                <div class="d-flex align-items-center">
+                    @if (HttpContextAccessor.HttpContext.Session.GetString("Username") != null)
+                    {
+                        var avatarFileName = HttpContextAccessor.HttpContext.Session.GetString("ImageUrl");
+                        var username = HttpContextAccessor.HttpContext.Session.GetString("FullName");
+                        var avatarUrl = string.IsNullOrEmpty(avatarFileName) ? "/images/default-avatar.png" : $"/uploads/{avatarFileName}";
+                        <div class="dropdown">
+                            <img src="@avatarUrl"
+                                 alt="Avatar"
+                                 class="user-avatar rounded-circle"
+                                 id="userDropdown"
+                                 style="width: 40px; height: 40px; object-fit: cover;"
+                                 onclick="toggleDropdown(event)">
+                            <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu">
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Profile">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Progress">Tiến độ</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                        <span class="text-dark ml-2">Xin chào, <b>@username</b></span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Đăng nhập</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+    <main>
+        @RenderBody()
+    </main>
+    <!-- Footer Start -->
+    <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
+        <div class="container mt-5 pt-5">
+            <div class="row">
+                <div class="col-md-6 mb-5">
+                    <a href="index.html" class="navbar-brand">
+                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>TLEnglish</h1>
+                    </a>
+                    <p class="m-0">TLEnglish là nơi cung cấp các khóa học tiếng Anh trực tuyến chất lượng cao. Chúng tôi cam kết giúp bạn học tiếng Anh dễ dàng và hiệu quả nhất!</p>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <h3 class="text-white mb-4">Đăng Ký Bản Tin</h3>
+                    <div class="w-100">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Địa Chỉ Email Của Bạn">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary px-4">Đăng Ký</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Liên Hệ Với Chúng Tôi</h3>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>123 Đường ABC, TP. Đà Nẵng, Việt Nam</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>+84 123 456 789</p>
+                    <p><i class="fa fa-envelope mr-2"></i>info@tlenglish.vn</p>
+                    <div class="d-flex justify-content-start mt-4">
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-linkedin-in"></i></a>
+                        <a class="text-white" href="#"><i class="fab fa-2x fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Khóa Học Của Chúng Tôi</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tiếng Anh Cơ Bản</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tiếng Anh Giao Tiếp</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>IELTS</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tiếng Anh Thương Mại</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>TOEIC</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Liên Kết Nhanh</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Chính Sách Bảo Mật</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Điều Khoản Sử Dụng</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Câu Hỏi Thường Gặp</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Hỗ Trợ</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Liên Hệ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <!-- Footer End -->
+    <!-- Back to Top -->
+    <a href="#" class="back-to-topp" style="
+    background-color: #3b82f6;
+    color: white;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    border-radius: 50%; /* Thêm để tạo hình tròn */
+    text-decoration: none; /* Loại bỏ gạch chân */
+    display: flex; /* Sử dụng flex để căn giữa icon */
+    align-items: center;
+    justify-content: center;
+    width: 50px; /* Định kích thước cố định */
+    height: 50px; /* Định kích thước cố định */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Hiệu ứng mượt mà */
+    z-index: 9999; /* Đảm bảo hiển thị trên cùng */
+" onmouseover="this.style.opacity='1'; this.style.transform='scale(1.1'); this.style.backgroundColor='#1e40af';" onmouseout="this.style.opacity='0.9'; this.style.transform='scale(1)'; this.style.backgroundColor='#3b82f6';">
+        <i class="fa fa-angle-double-up"></i>
+    </a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/easing/easing.min.js"></script>
+    <script src="~/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/lib/counterup/counterup.min.js"></script>
+    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- Custom JavaScript cho dropdown -->
+    <script>
+        function toggleDropdown(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var dropdownMenu = document.getElementById("userDropdownMenu");
+            if (dropdownMenu.style.display === "block") {
+                dropdownMenu.style.display = "none";
+            } else {
+                dropdownMenu.style.display = "block";
+            }
+        }
+
+        // Ẩn dropdown khi click ra ngoài
+        document.addEventListener("click", function (event) {
+            var dropdownMenu = document.getElementById("userDropdownMenu");
+            var avatar = document.getElementById("userDropdown");
+            if (!avatar.contains(event.target)) {
+                dropdownMenu.style.display = "none";
+            }
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>
