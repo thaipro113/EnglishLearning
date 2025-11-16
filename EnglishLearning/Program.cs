@@ -29,25 +29,11 @@ namespace EnglishLearning
 
             // ✅ Thêm cấu hình Authentication
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-             .AddCookie(options =>
-             {
-                 options.LoginPath = "/Account/Login";
-                 options.AccessDeniedPath = "/Account/AccessDenied";
-             })
-             .AddGoogle(googleOptions =>
-             {
-                 googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-                 googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-                 googleOptions.CallbackPath = "/signin-google"; // Mặc định
-             }).AddFacebook(facebookOptions =>
-             {
-                 facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-                 facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-                 facebookOptions.Scope.Add("email");
-                 facebookOptions.Fields.Add("email");
-                 facebookOptions.Fields.Add("picture");
-                 facebookOptions.Fields.Add("name");
-             }); ;
+  .AddCookie(options =>
+  {
+      options.LoginPath = "/Account/Login";
+      options.AccessDeniedPath = "/Account/AccessDenied";
+  });
 
 
             builder.Services.AddAuthorization();
