@@ -4,6 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Thêm dòng này -->
+    <UserSecretsId>EnglishLearning-Secret-12345</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

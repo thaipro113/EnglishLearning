@@ -44,7 +44,7 @@ namespace EnglishLearning.Controllers
 
             try
             {
-                var apiKey = _configuration["OpenRouter:ApiKey"];
+                var apiKey = _configuration["OpenRouters:ApiKey"];
                 var userId = HttpContext.Session.GetInt32("UserId");
                 if (userId == null)
                     return Json(new { reply = "Bạn chưa đăng nhập!" });
