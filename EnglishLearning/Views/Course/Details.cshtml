@@ -19,7 +19,11 @@
     <!-- Thanh tiến trình học tập -->
     <div class="progress-bar-container">
         <div class="progress-bar-fill" style="width: @(totalLessons > 0 ? (completedLessons * 100.0 / totalLessons) : 0)%">
-            @if (completedLessons > 0)
+            @if (completedLessons == totalLessons)
+            {
+                <span class="progress-text">Bạn đã hoàn thành khóa học</span>
+            }
+            else if (completedLessons > 0)
             {
                 <span class="progress-text">@completedLessons/@totalLessons bài hoàn thành</span>
             }
