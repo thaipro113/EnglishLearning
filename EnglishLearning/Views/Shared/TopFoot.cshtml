@@ -103,7 +103,7 @@
                                 <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Đăng xuất</a></li>
                             </ul>
                         </div>
-                        <span class="text-dark ml-2">Xin chào, <b>@username</b></span>
+                        <span class="text-dark ml-2" style="cursor:pointer;" id="userDropdown" onclick="toggleDropdown(event)"> <b>@username</b></span>
                     }
                     else
                     {

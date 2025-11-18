@@ -103,4 +103,19 @@ body {
         background-color: #f0f7ff;
     }
 
+/* === ĐẢM BẢO TÊN NGƯỜI DÙNG LUÔN IN ĐẬM & ĐẸP TRÊN MỌI TRANG === */
+.navbar .user-name,
+.navbar .fw-bold,
+.navbar b,
+.navbar strong {
+    font-family: 'Jost', sans-serif !important;
+    font-weight: 700 !important;
+    color: #1e3a8a !important;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
 
+    .navbar .user-name:hover,
+    .navbar .fw-bold:hover {
+        color: #3b82f6 !important;
+    }
