@@ -22,35 +22,6 @@ namespace EnglishLearning.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EnglishLearning.Models.ChatHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ChatHistories");
-                });
-
             modelBuilder.Entity("EnglishLearning.Models.Course", b =>
                 {
                     b.Property<string>("CourseId")
@@ -79,6 +50,56 @@ namespace EnglishLearning.Migrations
                     b.HasIndex("SubLevelId");
 
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("EnglishLearning.Models.Flashcard", b =>
+                {
+                    b.Property<int>("FlashcardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashcardId"));
+
+                    b.Property<string>("BackText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FlashcardSetId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FrontText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FlashcardId");
+
+                    b.HasIndex("FlashcardSetId");
+
+                    b.ToTable("Flashcards");
+                });
+
+            modelBuilder.Entity("EnglishLearning.Models.FlashcardSet", b =>
+                {
+                    b.Property<int>("FlashcardSetId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashcardSetId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FlashcardSetId");
+
+                    b.ToTable("FlashcardSets");
                 });
 
             modelBuilder.Entity("EnglishLearning.Models.LearningLevel", b =>
@@ -223,6 +244,9 @@ namespace EnglishLearning.Migrations
 
                     b.Property<string>("CorrectAnswer")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageGroup")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
@@ -389,17 +413,6 @@ namespace EnglishLearning.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("EnglishLearning.Models.ChatHistory", b =>
-                {
-                    b.HasOne("EnglishLearning.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("EnglishLearning.Models.Course", b =>
                 {
                     b.HasOne("EnglishLearning.Models.SubLevel", "SubLevel")
@@ -408,6 +421,17 @@ namespace EnglishLearning.Migrations
                         .HasConstraintName("FK_Courses_SubLevelId");
 
                     b.Navigation("SubLevel");
+                });
+
+            modelBuilder.Entity("EnglishLearning.Models.Flashcard", b =>
+                {
+                    b.HasOne("EnglishLearning.Models.FlashcardSet", "FlashcardSet")
+                        .WithMany("Flashcards")
+                        .HasForeignKey("FlashcardSetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FlashcardSet");
                 });
 
             modelBuilder.Entity("EnglishLearning.Models.Lesson", b =>
@@ -500,6 +524,11 @@ namespace EnglishLearning.Migrations
             modelBuilder.Entity("EnglishLearning.Models.Course", b =>
                 {
                     b.Navigation("Lessons");
+                });
+
+            modelBuilder.Entity("EnglishLearning.Models.FlashcardSet", b =>
+                {
+                    b.Navigation("Flashcards");
                 });
 
             modelBuilder.Entity("EnglishLearning.Models.LearningLevel", b =>

@@ -202,7 +202,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Hình ảnh</label>
-                                    <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" required />
+                                    <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control"  />
                                 </div>
                                 <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
                                 <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
@@ -345,32 +345,43 @@
                 <div class="part-title">
                     <i class="fas fa-align-left"></i> Part 6: Text Completion (16 câu)
                 </div>
-                <p class="text-muted small mb-3">Hoàn thành đoạn văn</p>
+                <p class="text-muted small mb-3">Hoàn thành đoạn văn - Mỗi 4 câu dùng chung 1 hình</p>
                 <div id="part6-Quizzes">
-                    @for (int i = 130; i < 146; i++)
+                    @for (int group = 0; group < 4; group++)
                     {
-                        var q = i + 1;
-                        <div class="quiz-item" data-index="@i">
-                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
-                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
-                            <input type="hidden" name="Quizzes[@i].Question" value="Part 6 - Question @q" />
-                            <div class="row g-2">
-                                <div class="col-12">
-                                    <label class="form-label fw-bold text-success">Câu @q</label>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Hình ảnh đoạn văn</label>
-                                    <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" required />
-                                </div>
-                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
-                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
-                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
-                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
-                                <div class="col-12">
-                                    <label class="text-danger">Đáp án đúng</label>
-                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                        var startIndex = 130 + (group * 4);
+                        var endIndex = Math.Min(startIndex + 4, 146);
+                        <div class="mb-4 p-3" style="border: 2px solid #4b6cb7; border-radius: 8px; background: #f0f4ff;">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">Nhóm @(group + 1): Câu @(startIndex + 1) - @endIndex (Hình ảnh chung)</label>
+                                <input type="file" name="Part6ImageGroup@(group)" id="Part6ImageGroup@(group)" accept="image/*" class="form-control" onchange="previewImage(this, 'part6Preview@(group)')" />
+                                <div id="part6Preview@(group)" class="mt-2" style="display:none;">
+                                    <img src="" alt="Preview" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />
                                 </div>
                             </div>
+                            @for (int i = startIndex; i < endIndex; i++)
+                            {
+                                var q = i + 1;
+                                <div class="quiz-item" data-index="@i" data-group="@group">
+                                    <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                                    <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                                    <input type="hidden" name="Quizzes[@i].Question" value="Part 6 - Question @q" />
+                                    <input type="hidden" name="Quizzes[@i].ImageGroup" value="Part6Group@(group)" />
+                                    <div class="row g-2">
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold text-success">Câu @q</label>
+                                        </div>
+                                        <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                        <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                        <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                        <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                        <div class="col-12">
+                                            <label class="text-danger">Đáp án đúng</label>
+                                            <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     }
                 </div>
@@ -381,32 +392,145 @@
                 </div>
                 <p class="text-muted small mb-3">Đọc hiểu → trả lời câu hỏi</p>
                 <div id="part7-Quizzes">
-                    @for (int i = 146; i < 200; i++)
-                    {
-                        var q = i + 1;
-                        <div class="quiz-item" data-index="@i">
-                            <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
-                            <input type="hidden" name="Quizzes[@i].LessonId" value="" />
-                            <input type="hidden" name="Quizzes[@i].Question" value="Part 6 - Question @q" />
-                            <div class="row g-2">
-                                <div class="col-12">
-                                    <label class="form-label fw-bold text-success">Câu @q</label>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Hình ảnh đoạn văn</label>
-                                    <input type="file" name="Quizzes[@i].ImageFile" accept="image/*" class="form-control" required />
-                                </div>
-                                <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
-                                <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
-                                <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
-                                <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
-                                <div class="col-12">
-                                    <label class="text-danger">Đáp án đúng</label>
-                                    <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
-                                </div>
-                            </div>
+                    <!-- 147–163: Mỗi hình có thể chứa 2 hoặc 3 câu, tùy chọn -->
+                    <div class="part-title">
+                        <i class="fas fa-book"></i> Part 7: Reading Comprehension (Câu 147–163)
+                    </div>
+                    <p class="text-muted small mb-3">
+                        Có thể chọn số câu cho mỗi hình (2 hoặc 3 câu / hình)
+                    </p>
+
+                    <div id="part7-147-163-container"></div>
+
+                    <!-- Nút thêm nhóm hình -->
+                    <button type="button" class="btn btn-outline-primary mt-2" onclick="addPart7Group()">
+                        <i class="fas fa-plus"></i> Thêm nhóm hình (2–3 câu)
+                    </button>
+
+                    <!-- Nhóm 1B: Câu 164-175 (4 câu cho 1 hình - cố định) -->
+                    <div class="mb-4 p-3" style="border: 2px solid #20c997; border-radius: 8px; background: #e6fff9;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-info">Nhóm 1B: Câu 164-175 (4 câu cho 1 hình)</label>
                         </div>
-                    }
+                        @{
+                            int group1BStart = 163;
+                            int group1BEnd = 175;
+                            int group1BCount = 0;
+                            for (int i = group1BStart; i < group1BEnd; i += 4)
+                            {
+                                int currentEnd = Math.Min(i + 4, group1BEnd);
+                                <div class="mb-3 p-2" style="border: 1px solid #20c997; border-radius: 6px; background: #f0fffb;">
+                                    <label class="form-label fw-bold">Hình @(group1BCount + 1): Câu @(i + 1) - @currentEnd</label>
+                                    <input type="file" name="Part7ImageGroup1B@(group1BCount)" id="Part7ImageGroup1B@(group1BCount)" accept="image/*" class="form-control" onchange="previewImage(this, 'part7Preview1B@(group1BCount)')" />
+                                    <div id="part7Preview1B@(group1BCount)" class="mt-2" style="display:none;">
+                                        <img src="" alt="Preview" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />
+                                    </div>
+                                    @for (int j = i; j < currentEnd; j++)
+                                    {
+                                        var q = j + 1;
+                                        <div class="quiz-item mt-2" data-index="@j" data-group="1B@(group1BCount)">
+                                            <input type="hidden" name="Quizzes[@j].QuizId" value="0" />
+                                            <input type="hidden" name="Quizzes[@j].LessonId" value="" />
+                                            <input type="hidden" name="Quizzes[@j].Question" value="Part 7 - Question @q" />
+                                            <input type="hidden" name="Quizzes[@j].ImageGroup" value="Part7Group1B@(group1BCount)" />
+                                            <div class="row g-2">
+                                                <div class="col-12">
+                                                    <label class="form-label fw-bold text-success">Câu @q</label>
+                                                </div>
+                                                <div class="col-md-6"><label>A</label><input name="Quizzes[@j].OptionA" class="form-control" /></div>
+                                                <div class="col-md-6"><label>B</label><input name="Quizzes[@j].OptionB" class="form-control" /></div>
+                                                <div class="col-md-6"><label>C</label><input name="Quizzes[@j].OptionC" class="form-control" /></div>
+                                                <div class="col-md-6"><label>D</label><input name="Quizzes[@j].OptionD" class="form-control" /></div>
+                                                <div class="col-12">
+                                                    <label class="text-danger">Đáp án đúng</label>
+                                                    <input name="Quizzes[@j].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                group1BCount++;
+                            }
+                        }
+                    </div>
+
+                    <!-- Nhóm 2: Câu 176-185 (2 hình) -->
+                    <div class="mb-4 p-3" style="border: 2px solid #ff9800; border-radius: 8px; background: #fff8f0;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-warning">Nhóm 2: Câu 176-185 (2 hình)</label>
+                        </div>
+                        @for (int group = 0; group < 2; group++)
+                        {
+                            var startIndex = 175 + (group * 5);
+                            var endIndex = Math.Min(startIndex + 5, 185);
+                            <div class="mb-3 p-2" style="border: 1px solid #ff9800; border-radius: 6px; background: #fffbf0;">
+                                <label class="form-label fw-bold">Hình @(group + 1): Câu @(startIndex + 1) - @endIndex</label>
+                                <input type="file" name="Part7ImageGroup@(group + 1)" id="Part7ImageGroup@(group + 1)" accept="image/*" class="form-control" />
+                                @for (int i = startIndex; i < endIndex; i++)
+                                {
+                                    var q = i + 1;
+                                    <div class="quiz-item mt-2" data-index="@i" data-group="@(group + 1)">
+                                        <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                                        <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                                        <input type="hidden" name="Quizzes[@i].Question" value="Part 7 - Question @q" />
+                                        <input type="hidden" name="Quizzes[@i].ImageGroup" value="Part7Group@(group + 1)" />
+                                        <div class="row g-2">
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold text-success">Câu @q</label>
+                                            </div>
+                                            <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                            <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                            <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                            <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                            <div class="col-12">
+                                                <label class="text-danger">Đáp án đúng</label>
+                                                <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Nhóm 3: Câu 186-200 (3 hình) -->
+                    <div class="mb-4 p-3" style="border: 2px solid #9c27b0; border-radius: 8px; background: #faf0ff;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-info">Nhóm 3: Câu 186-200 (3 hình)</label>
+                        </div>
+                        @for (int group = 0; group < 3; group++)
+                        {
+                            var startIndex = 185 + (group * 5);
+                            var endIndex = Math.Min(startIndex + 5, 200);
+                            <div class="mb-3 p-2" style="border: 1px solid #9c27b0; border-radius: 6px; background: #fef5ff;">
+                                <label class="form-label fw-bold">Hình @(group + 1): Câu @(startIndex + 1) - @endIndex</label>
+                                <input type="file" name="Part7ImageGroup@(group + 3)" id="Part7ImageGroup@(group + 3)" accept="image/*" class="form-control" />
+                                @for (int i = startIndex; i < endIndex; i++)
+                                {
+                                    var q = i + 1;
+                                    <div class="quiz-item mt-2" data-index="@i" data-group="@(group + 3)">
+                                        <input type="hidden" name="Quizzes[@i].QuizId" value="0" />
+                                        <input type="hidden" name="Quizzes[@i].LessonId" value="" />
+                                        <input type="hidden" name="Quizzes[@i].Question" value="Part 7 - Question @q" />
+                                        <input type="hidden" name="Quizzes[@i].ImageGroup" value="Part7Group@(group + 3)" />
+                                        <div class="row g-2">
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold text-success">Câu @q</label>
+                                            </div>
+                                            <div class="col-md-6"><label>A</label><input name="Quizzes[@i].OptionA" class="form-control" /></div>
+                                            <div class="col-md-6"><label>B</label><input name="Quizzes[@i].OptionB" class="form-control" /></div>
+                                            <div class="col-md-6"><label>C</label><input name="Quizzes[@i].OptionC" class="form-control" /></div>
+                                            <div class="col-md-6"><label>D</label><input name="Quizzes[@i].OptionD" class="form-control" /></div>
+                                            <div class="col-12">
+                                                <label class="text-danger">Đáp án đúng</label>
+                                                <input name="Quizzes[@i].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="a" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <hr class="my-4">
@@ -428,4 +552,66 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        let currentQuestion = 146; // Bắt đầu từ câu 147 (index 146)
+        const maxQuestion = 163;   // Câu 163 (index 162)
+        let groupCounter = 0;      // Đếm số nhóm đã tạo
+
+        function addPart7Group() {
+            if (currentQuestion >= maxQuestion) {
+                alert("Đã hết câu hỏi cho phần này (147–163).");
+                return;
+            }
+
+            // Hỏi admin muốn nhóm này có bao nhiêu câu
+            let numQuestions = parseInt(prompt("Nhóm này có bao nhiêu câu? (2 hoặc 3)", "2"));
+            if (![2, 3].includes(numQuestions)) {
+                alert("Chỉ được chọn 2 hoặc 3 câu.");
+                return;
+            }
+
+            const groupStart = currentQuestion + 1;
+            const groupEnd = Math.min(currentQuestion + numQuestions, maxQuestion);
+
+            let html = `
+                                <div class="quiz-item border rounded p-3 mb-3 bg-light" data-group-index="${groupCounter}">
+                                    <label class="form-label fw-bold text-primary">Nhóm câu ${groupStart} - ${groupEnd} (1 hình)</label>
+                                    <input type="file" name="Part7Images_GroupDynamic[${groupCounter}]" accept="image/*" class="form-control mb-3" required />
+                            `;
+
+            for (let q = groupStart; q <= groupEnd; q++) {
+                const quizIndex = q - 1; // Index trong mảng (0-based)
+                html += `
+                                    <div class="border rounded p-3 mb-2 bg-white">
+                                        <label class="form-label fw-bold text-success">Câu ${q}</label>
+                                        <input type="hidden" name="Quizzes[${quizIndex}].QuizId" value="0" />
+                                        <input type="hidden" name="Quizzes[${quizIndex}].LessonId" value="" />
+                                        <input type="hidden" name="Quizzes[${quizIndex}].Question" value="Part 7 - Question ${q}" />
+                                        <input type="hidden" name="Quizzes[${quizIndex}].ImageGroup" value="Part7GroupDynamic${groupCounter}" />
+                                        <div class="row g-2">
+                                            <div class="col-md-6"><label>A</label><input name="Quizzes[${quizIndex}].OptionA" class="form-control" /></div>
+                                            <div class="col-md-6"><label>B</label><input name="Quizzes[${quizIndex}].OptionB" class="form-control" /></div>
+                                            <div class="col-md-6"><label>C</label><input name="Quizzes[${quizIndex}].OptionC" class="form-control" /></div>
+                                            <div class="col-md-6"><label>D</label><input name="Quizzes[${quizIndex}].OptionD" class="form-control" /></div>
+                                            <div class="col-12">
+                                                <label class="text-danger">Đáp án đúng</label>
+                                                <input name="Quizzes[${quizIndex}].CorrectAnswer" class="form-control" maxlength="1" style="text-transform:uppercase" value="A" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+            }
+
+            html += `</div>`;
+            document.getElementById("part7-147-163-container").insertAdjacentHTML("beforeend", html);
+
+            currentQuestion += numQuestions;
+            groupCounter++;
+
+            // Ẩn nút nếu đã hết câu
+            if (currentQuestion >= maxQuestion) {
+                document.querySelector('button[onclick="addPart7Group()"]').style.display = 'none';
+            }
+        }
+    </script>
 }

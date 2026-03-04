@@ -26,7 +26,7 @@
                         <tbody>
                             @foreach (var progress in ViewBag.UserProgress)
                             {
-                                <tr class="animate__animated animate__fadeInUp">
+                                <tr>
                                     <td><span class="badge bg-gradient-info text-dark">@progress.CourseName</span></td>
                                     <td style="text-align:center;">@progress.TotalLessons</td>
                                     <td style="text-align:center;">
@@ -34,7 +34,7 @@
                                     </td>
                                     <td style="text-align:center;">@progress.LastCompleted?.ToString("dd/MM/yyyy")</td>
                                     <td>
-                                        <a href="@Url.Action("ProgressDetail", "User", new { courseId = progress.CourseId })" class="btn btn-light btn-sm rounded-pill animate__animated animate__pulse animate__infinite"><i class="bi bi-eye me-2"></i>Xem chi tiết</a>
+                                        <a href="@Url.Action("ProgressDetail", "User", new { courseId = progress.CourseId })" class="btn btn-light btn-sm rounded-pill"><i class="bi bi-eye me-2"></i>Xem chi tiết</a>
                                     </td>
                                 </tr>
                             }
@@ -68,11 +68,11 @@
         }
 
     .bg-gradient-primary {
-        background: linear-gradient(45deg, #007bff, #00d4ff);
+        background: rgb(53, 117, 232);
     }
 
     .bg-gradient-info {
-        background: linear-gradient(45deg, #17a2b8, #3df1ff);
+        background: #17a2b8;
     }
 
     .card-header {

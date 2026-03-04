@@ -29,6 +29,7 @@ namespace EnglishLearning.Models
 
         [StringLength(200)]
         public string? ImagePath { get; set; }
+        public string? ImageGroup { get; set; }
 
         [NotMapped]
         public IFormFile? ImageFile { get; set; }

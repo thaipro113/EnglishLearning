@@ -2,10 +2,12 @@
 using EnglishLearning.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using EnglishLearning.Areas.Admin.Attributes;
 
 namespace EnglishLearning.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [AdminAuthorize]
     public class UserController : Controller
     {
         private readonly EnglishLearningDbContext _context;

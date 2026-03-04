@@ -16,11 +16,11 @@ body {
     }
 
 .bg-gradient-primary {
-    background: linear-gradient(45deg, #007bff, #00d4ff);
+    background: rgb(53, 117, 232);
 }
 
 .bg-gradient-info {
-    background: linear-gradient(45deg, #17a2b8, #3df1ff);
+    background: #379be5;
 }
 
 .bg-gradient-success {
@@ -59,11 +59,6 @@ body {
         transform: scale(1.1);
     }
 
-.progress {
-    border-radius: 15px;
-    overflow: hidden;
-    background-color: #e9ecef;
-}
 .btn-outline-light {
     border-color: #fff;
     transition: background-color 0.3s ease, transform 0.2s ease;
@@ -86,18 +81,38 @@ body {
         transform: scale(1.05);
     }
 
-@media (max-width: 768px) {
-    .card-header h2 {
-        font-size: 1.4rem;
-    }
-
-    .btn-sm {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
-    }
-
-    .table th, .table td {
-        padding: 0.8rem;
-        font-size: 0.9rem;
-    }
+.btn-outline-warning {
+    border-color: #ffc107;
+    color: #ffc107;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: #000;
+        transform: scale(1.05);
+    }
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: #fff;
+        transform: scale(1.05);
+    }
+.progress-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-weight: 600;
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+

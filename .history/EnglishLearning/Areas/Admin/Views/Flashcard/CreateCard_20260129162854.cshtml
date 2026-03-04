@@ -1,0 +1,41 @@
+@model EnglishLearning.Models.Flashcard
+
+@{
+    ViewData["Title"] = "Thêm thẻ mới";
+    Layout = "~/Areas/Admin/Views/Shared/Temp.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Thêm thẻ mới</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form asp-action="CreateCard">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="FlashcardSetId" value="@ViewBag.FlashcardSetId" />
+                
+                <div class="form-group">
+                    <label asp-for="FrontText" class="control-label"></label>
+                    <textarea asp-for="FrontText" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="FrontText" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="BackText" class="control-label"></label>
+                    <textarea asp-for="BackText" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="BackText" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <a asp-action="ManageCards" asp-route-id="@ViewBag.FlashcardSetId" class="btn btn-secondary">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- FontAwesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

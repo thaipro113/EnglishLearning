@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-5 mb-5">
-    <div class="card shadow-lg border-0 animate__animated animate__fadeIn">
+    <div class="card shadow-lg border-0">
         <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
             <h2 class="mb-0"><i class="bi bi-list-task me-2"></i>Chi tiết tiến độ - @ViewBag.CourseName</h2>
             <a asp-action="Progress" class="btn btn-light btn-sm rounded-pill"><i class="bi bi-arrow-left me-2"></i>Quay lại</a>
@@ -25,7 +25,7 @@
                         <tbody>
                             @foreach (var detail in ViewBag.ProgressDetails)
                             {
-                                <tr class="animate__animated animate__fadeInUp">
+                                <tr>
                                     <td><span class="badge bg-gradient-info text-dark">@detail.LessonName</span></td>
                                     <td>@detail.Score/10</td>
                                     <td>@detail.CompletedAt?.ToString("dd/MM/yyyy")</td>
@@ -36,7 +36,7 @@
                 }
                 else
                 {
-                    <p class="text-center text-muted p-4 animate__animated animate__fadeIn">Không có dữ liệu chi tiết cho khóa học này.</p>
+                    <p class="text-center text-muted p-4">Không có dữ liệu chi tiết cho khóa học này.</p>
                 }
             </div>
         </div>
@@ -58,10 +58,10 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         .bg-gradient-primary {
-            background: linear-gradient(45deg, #007bff, #00d4ff);
+        background: rgb(53, 117, 232);
         }
         .bg-gradient-info {
-            background: linear-gradient(45deg, #17a2b8, #3df1ff);
+        background: #17a2b8;
         }
         .bg-gradient-success {
             background: linear-gradient(45deg, #28a745, #7cff8e);

@@ -1,0 +1,56 @@
+@model IEnumerable<EnglishLearning.Models.Flashcard>
+
+@{
+    ViewData["Title"] = "Quản lý thẻ";
+    Layout = "~/Areas/Admin/Views/Shared/Temp.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Quản lý thẻ - @ViewBag.SetTitle</h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách thẻ</h6>
+            <div>
+                <a asp-action="CreateCard" asp-route-setId="@ViewBag.FlashcardSetId" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Thêm thẻ mới
+                </a>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Mặt trước</th>
+                            <th>Mặt sau</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FrontText</td>
+                                <td>@item.BackText</td>
+                                <td>
+                                    <a asp-action="EditCard" asp-route-id="@item.FlashcardId" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="DeleteCard" asp-route-id="@item.FlashcardId" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa thẻ này?');">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

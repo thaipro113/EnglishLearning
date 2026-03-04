@@ -1,0 +1,459 @@
+﻿@model List<EnglishLearning.Models.Quiz>
+@{
+    ViewBag.Title = ViewBag.Title ?? "Bài thi TOEIC";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+    var timerDuration = 120 * 60; // 120 phút cho TOEIC
+}
+
+<style>
+    :root {
+        --primary: #4CAF50;
+        --danger: #f44336;
+        --dark: #333;
+        --info: #17a2b8;
+    }
+
+    .quizzy-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 20px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .quiz-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--dark);
+    }
+
+    .quiz-subtitle {
+        font-size: 1.2rem;
+        color: #2196F3;
+        margin-top: 5px;
+    }
+
+    .timer-badge {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #fff;
+        background: var(--danger);
+        padding: 8px 15px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 10px;
+        box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
+    }
+
+    .progress-container {
+        background: #e0e0e0;
+        height: 8px;
+        border-radius: 4px;
+        margin: 15px 0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4CAF50, #8bc34a);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .quiz-body {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+        position: sticky;
+        top: 80px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .question-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 8px;
+        margin: 10px 0;
+    }
+
+    .q-number {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f8f9fa;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+        .q-number:hover {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+
+        .q-number.answered {
+            background: #E8F5E9;
+            color: #2e7d32;
+            border-color: #4CAF50;
+        }
+
+        .q-number.current {
+            border-color: #2196F3;
+            background: #2196F3;
+            color: white;
+            box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
+        }
+
+    /* Main quiz content */
+    .quiz-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        min-height: 600px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .audio-player-container {
+        background: #f1f8e9;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        border-left: 5px solid #8bc34a;
+    }
+
+    .question-group {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px dashed #eee;
+    }
+
+    .group-image {
+        text-align: center;
+        margin-bottom: 20px;
+        background: #fafafa;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+    
+    .group-image img {
+        max-width: 100%;
+        max-height: 500px;
+        border-radius: 4px;
+    }
+
+    .question-item {
+        background: #fff;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left: 3px solid transparent;
+        transition: all 0.2s;
+    }
+
+    .question-item.active {
+        border-left-color: #2196F3;
+        background: #f8fdff;
+    }
+
+    .question-text {
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #2c3e50;
+        font-size: 1.05rem;
+    }
+
+    .option-label {
+        display: block;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin: 8px 0;
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .option-label:hover {
+            background: #f5f5f5;
+            border-color: #bdbdbd;
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #2196F3;
+        }
+
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+        .btn-submit:hover {
+            background: #43a047;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+
+    /* Thông báo lỗi nộp bài */
+    #submitWarning {
+        animation: shake 0.5s ease-in-out;
+        border: 2px solid #ffc107 !important;
+        background: linear-gradient(135deg, #fff8e1, #ffeaa7) !important;
+        color: #856404;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+
+    .q-number.unanswered {
+        background: #ffebee !important;
+        border-color: #ef5350 !important;
+        color: #c62828;
+        animation: pulse 1.5s infinite;
+    }
+
+    @@keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4); }
+        70% { box-shadow: 0 0 0 6px rgba(239, 83, 80, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0); }
+    }
+</style>
+
+<div class="quizzy-container">
+    <div class="quiz-header">
+        <div class="quiz-title">TOEIC PRACTICE TEST</div>
+        <div class="quiz-subtitle">@ViewBag.Title</div>
+        <div class="timer-badge">
+            <i class="fas fa-clock"></i> <span id="timer">120:00</span>
+        </div>
+    </div>
+
+    <!-- THÔNG BÁO LỖI NỘP BÀI -->
+    <div id="submitWarning" class="alert alert-warning mt-3 d-none" role="alert" style="max-width: 600px; margin: 0 auto; text-align: center;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Bạn chưa hoàn thành bài thi!</strong><br>
+        <span id="missingCount"></span> câu chưa được trả lời.
+        <button type="button" class="btn-close float-end" onclick="document.getElementById('submitWarning').classList.add('d-none')"></button>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="quiz-body">
+        <div class="sidebar">
+            <h5 class="text-center mb-3 fw-bold text-secondary">Question Map</h5>
+            <div class="question-grid" id="questionGrid"></div>
+            <button type="button" class="btn btn-submit" onclick="submitQuiz()">
+                <i class="fas fa-paper-plane"></i> Nộp bài
+            </button>
+        </div>
+
+        <div class="quiz-content">
+            @if (!string.IsNullOrEmpty(ViewBag.AudioPath))
+            {
+                <div class="audio-player-container">
+                    <h5 class="mb-2"><i class="fas fa-headphones"></i> Audio Listening</h5>
+                    <audio controls style="width: 100%;">
+                        <source src="@ViewBag.AudioPath" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            }
+
+            <form asp-action="SubmitTest" method="post" id="quizForm">
+                <input type="hidden" name="lessonId" value="@ViewBag.LessonId" />
+                <div id="questionsContainer">
+                    @{
+                        string lastImagePath = "";
+                    }
+
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var quiz = Model[i];
+                        bool showImage = !string.IsNullOrEmpty(quiz.ImagePath) && quiz.ImagePath != lastImagePath;
+                        if (showImage)
+                        {
+                            lastImagePath = quiz.ImagePath;
+                        }
+
+                        <div class="question-item-wrapper" id="q-wrapper-@i">
+                            @if (showImage)
+                            {
+                                <div class="group-image">
+                                    <img src="@Url.Content(quiz.ImagePath)" alt="Question Image" />
+                                </div>
+                            }
+
+                            <div class="question-item" id="q-item-@i">
+                                <div class="question-text">
+                                    <span class="badge bg-primary me-2">@((i + 1))</span> @quiz.Question
+                                </div>
+                                <div class="options">
+                                    @foreach (var o in new[] { "A", "B", "C", "D" })
+                                    {
+                                        var val = quiz.GetType().GetProperty($"Option{o}")?.GetValue(quiz)?.ToString();
+                                        if (!string.IsNullOrEmpty(val))
+                                        {
+                                            <label class="option-label">
+                                                <input type="radio" name="userAnswers[@quiz.QuizId]" value="@o" onchange="updateAnswer(@i, this)" />
+                                                <strong>@o.</strong> @val
+                                            </label>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let time = @(timerDuration);
+        const timer = document.getElementById('timer');
+        const progressBar = document.getElementById('progressBar');
+        const totalQuestions = @Model.Count;
+        let answers = new Array(totalQuestions).fill(null);
+
+        const lessonId = "@ViewBag.LessonId";
+        const keyAnswers = `quizAnswers_TOEIC_${lessonId}`;
+        const keyTime = `quizTimeLeft_TOEIC_${lessonId}`;
+
+        // Tạo lưới số câu
+        const grid = document.getElementById('questionGrid');
+        for (let i = 0; i < totalQuestions; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'q-number';
+            btn.textContent = i + 1;
+            btn.onclick = () => scrollToQuestion(i);
+            btn.id = `btn-q-${i}`;
+            grid.appendChild(btn);
+        }
+
+        function scrollToQuestion(index) {
+            const el = document.getElementById(`q-item-${index}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Highlight active question
+                document.querySelectorAll('.question-item').forEach(q => q.classList.remove('active'));
+                el.classList.add('active');
+                
+                // Highlight grid
+                document.querySelectorAll('.q-number').forEach(b => b.classList.remove('current'));
+                document.getElementById(`btn-q-${index}`).classList.add('current');
+            }
+        }
+
+        function updateAnswer(qIndex, radio) {
+            answers[qIndex] = radio.value;
+            document.getElementById(`btn-q-${qIndex}`).classList.add('answered');
+            updateProgress();
+            localStorage.setItem(keyAnswers, JSON.stringify(answers));
+        }
+
+        function updateProgress() {
+            const answeredCount = answers.filter(a => a !== null).length;
+            progressBar.style.width = `${(answeredCount / totalQuestions) * 100}%`;
+        }
+
+        // Đếm ngược
+        setInterval(() => {
+            if (time > 0) {
+                time--;
+                const h = Math.floor(time / 3600);
+                const m = Math.floor((time % 3600) / 60);
+                const s = time % 60;
+                timer.textContent = `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                localStorage.setItem(keyTime, time);
+            } else {
+                // Auto submit when time over
+                document.getElementById("quizForm").submit();
+            }
+        }, 1000);
+
+        // Khôi phục trạng thái
+        window.addEventListener('load', () => {
+            const savedAnswers = JSON.parse(localStorage.getItem(keyAnswers));
+            const savedTime = localStorage.getItem(keyTime);
+
+            if (savedAnswers && savedAnswers.length === totalQuestions) {
+                answers = savedAnswers;
+                answers.forEach((ans, i) => {
+                    if (ans) {
+                        const wrapper = document.getElementById(`q-item-${i}`);
+                        if(wrapper) {
+                             const radio = wrapper.querySelector(`input[value="${ans}"]`);
+                             if(radio) radio.checked = true;
+                             document.getElementById(`btn-q-${i}`).classList.add('answered');
+                        }
+                    }
+                });
+                updateProgress();
+            }
+            if (savedTime) time = parseInt(savedTime);
+        });
+
+        function submitQuiz() {
+            const answeredCount = answers.filter(a => a !== null).length;
+
+            if (answeredCount < totalQuestions) {
+                const missing = totalQuestions - answeredCount;
+                const warning = document.getElementById('submitWarning');
+                document.getElementById('missingCount').textContent = `Còn thiếu ${missing}`;
+                warning.classList.remove('d-none');
+
+                // Highlight các câu chưa làm
+                answers.forEach((ans, i) => {
+                    const btn = document.getElementById(`btn-q-${i}`);
+                    if (ans === null) {
+                        btn.classList.add('unanswered');
+                    } else {
+                        btn.classList.remove('unanswered');
+                    }
+                });
+
+                warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return; 
+            }
+
+            // Clear storage and submit
+            localStorage.removeItem(keyAnswers);
+            localStorage.removeItem(keyTime);
+            document.getElementById("quizForm").submit();
+        }
+    </script>
+}

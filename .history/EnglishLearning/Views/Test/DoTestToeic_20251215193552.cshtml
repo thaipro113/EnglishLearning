@@ -1,0 +1,706 @@
+﻿@model List<Quiz>
+@{
+    ViewBag.Title = ViewBag.Title ?? "Làm bài kiểm tra TOEIC";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+    var timerDuration = 120 * 60; // 120 phút cho TOEIC
+}
+
+
+<link href="~/css/dotesttoiec.css" rel="stylesheet" />
+<div class="quizzy-container">
+    <div class="quiz-header">
+        <div class="quiz-title">ENGLISH TEST</div>
+        <div class="quiz-subtitle">@ViewBag.Title</div>
+        <div class="timer">Thời gian: <span id="timer">120:00</span></div>
+    </div>
+    <div id="submitWarning" class="alert alert-warning mt-3 d-none" role="alert" style="max-width: 600px; margin: 0 auto; text-align: center;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Bạn chưa hoàn thành bài thi!</strong><br>
+        <span id="missingCount"></span> câu chưa được trả lời.
+        <button type="button" class="btn-close float-end" onclick="document.getElementById('submitWarning').classList.add('d-none')"></button>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="quiz-body">
+        <div class="sidebar">
+            <h4 style="text-align:center; margin-bottom:10px;">Sơ đồ câu hỏi</h4>
+            <div class="question-grid" id="questionGrid"></div>
+            <button type="button" class="btn btn-submit" onclick="submitQuiz()">Nộp bài</button>
+        </div>
+
+        <div class="quiz-content">
+            <form asp-action="SubmitTest" method="post" id="quizForm">
+                <input type="hidden" name="lessonId" value="@ViewBag.LessonId" />
+                <div id="questionsContainer">
+                    <!-- ====================== TOEIC: PART 1-7 ====================== -->
+                    <h3 class="mt-4">Listening Section</h3>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.AudioPath))
+                    {
+                        <div class="audio-player">
+                            <audio controls class="w-100 mb-4">
+                                <source src="@Url.Content(ViewBag.AudioPath)" type="audio/mpeg">
+                                Trình duyệt không hỗ trợ audio.
+                            </audio>
+                        </div>
+                    }
+
+                    <!-- Part 1: Photographs (6 câu) -->
+                    <h5>Part 1: Photographs (6 câu)</h5>
+                    @for (int j = 0; j < 6 && j < Model.Count; j++)
+                    {
+                        var quiz = Model[j];
+                        <div class="question-item" data-question-index="@j">
+                            <strong>@(j + 1). @quiz.Question</strong><br />
+                            @if (!string.IsNullOrEmpty(quiz.ImagePath))
+                            {
+                                <img src="@Url.Content(quiz.ImagePath)" alt="Photograph" style="max-width: 100%; margin-bottom: 10px;margin-left:0;" />
+                            }
+                            @foreach (var option in new[] { "A", "B", "C", "D" })
+                            {
+                                <label class="option-label">
+                                    <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                    <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                </label>
+                            }
+                        </div>
+                    }
+
+                    <!-- Part 2: Question – Response (25 câu) -->
+                    <h5>Part 2: Question – Response (25 câu)</h5>
+                    @for (int j = 6; j < 31 && j < Model.Count; j++)
+                    {
+                        var quiz = Model[j];
+                        <div class="question-item" data-question-index="@j">
+                            <strong>@(j + 1). @quiz.Question</strong><br />
+                            @foreach (var option in new[] { "A", "B", "C" })
+                            {
+                                <label class="option-label">
+                                    <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                    <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                </label>
+                            }
+                        </div>
+                    }
+
+                    <!-- Part 3: Conversations (39 câu) -->
+                    <h5>Part 3: Conversations (39 câu)</h5>
+                    @for (int j = 31; j < 70 && j < Model.Count; j++)
+                    {
+                        var quiz = Model[j];
+                        <div class="question-item" data-question-index="@j">
+                            <strong>@(j + 1). @quiz.Question</strong><br />
+                            @foreach (var option in new[] { "A", "B", "C", "D" })
+                            {
+                                <label class="option-label">
+                                    <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                    <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                </label>
+                            }
+                        </div>
+                    }
+
+                    <!-- Part 4: Talks (30 câu) -->
+                    <h5>Part 4: Talks (30 câu)</h5>
+                    @for (int j = 70; j < 100 && j < Model.Count; j++)
+                    {
+                        var quiz = Model[j];
+                        <div class="question-item" data-question-index="@j">
+                            <strong>@(j + 1). @quiz.Question</strong><br />
+                            @foreach (var option in new[] { "A", "B", "C", "D" })
+                            {
+                                <label class="option-label">
+                                    <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                    <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                </label>
+                            }
+                        </div>
+                    }
+
+                    <h3 class="mt-4">Reading Section</h3>
+
+                    <!-- Part 5: Incomplete Sentences (30 câu) -->
+                    <h5>Part 5: Incomplete Sentences (30 câu)</h5>
+                    @for (int j = 100; j < 130 && j < Model.Count; j++)
+                    {
+                        var quiz = Model[j];
+                        <div class="question-item" data-question-index="@j">
+                            <strong>@(j + 1). @quiz.Question</strong><br />
+                            @foreach (var option in new[] { "A", "B", "C", "D" })
+                            {
+                                <label class="option-label">
+                                    <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                    <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                </label>
+                            }
+                        </div>
+                    }
+
+                    <!-- Part 6: Text Completion (16 câu) -->
+                    <h5>Part 6: Text Completion (16 câu)</h5>
+                    @{
+                        // Tạo mapping cho các nhóm ảnh Part 6 dựa trên ImagePath giống nhau và liên tiếp
+                        var part6ImageGroups = new Dictionary<string, (int start, int end, string imagePath)>();
+                        string currentImagePath6 = null;
+                        int groupStart6 = -1;
+                        int groupCounter6 = 0;
+                        for (int j = 130; j < 146 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            string imgPath = quiz?.ImagePath;
+
+                            if (!string.IsNullOrEmpty(imgPath))
+                            {
+                                if (currentImagePath6 == null)
+                                {
+                                    // Bắt đầu nhóm mới
+                                    currentImagePath6 = imgPath;
+                                    groupStart6 = j;
+                                }
+                                else if (imgPath != currentImagePath6)
+                                {
+                                    // Kết thúc nhóm trước và bắt đầu nhóm mới
+                                    if (groupStart6 >= 0)
+                                    {
+                                        string groupKey = $"part6-group{groupCounter6}";
+                                        part6ImageGroups[groupKey] = (groupStart6, j - 1, currentImagePath6);
+                                        groupCounter6++;
+                                    }
+                                    currentImagePath6 = imgPath;
+                                    groupStart6 = j;
+                                }
+                                // Nếu ImagePath giống nhau, tiếp tục nhóm hiện tại
+                            }
+                            else
+                            {
+                                // Nếu câu hỏi không có ImagePath, kết thúc nhóm hiện tại
+                                if (currentImagePath6 != null && groupStart6 >= 0)
+                                {
+                                    string groupKey = $"part6-group{groupCounter6}";
+                                    part6ImageGroups[groupKey] = (groupStart6, j - 1, currentImagePath6);
+                                    groupCounter6++;
+                                    currentImagePath6 = null;
+                                    groupStart6 = -1;
+                                }
+                            }
+                        }
+                        // Lưu nhóm cuối cùng nếu có
+                        if (currentImagePath6 != null && groupStart6 >= 0)
+                        {
+                            string groupKey = $"part6-group{groupCounter6}";
+                            int endIdx = Math.Min(145, Model.Count - 1);
+                            part6ImageGroups[groupKey] = (groupStart6, endIdx, currentImagePath6);
+                        }
+                    }
+
+                    @foreach (var imgGroup in part6ImageGroups)
+                    {
+                        <div class="image-container" data-image-group="@imgGroup.Key" data-start-question="@imgGroup.Value.start" data-end-question="@imgGroup.Value.end">
+                            <div class="mb-3 p-3" style="border: 2px solid #4b6cb7; border-radius: 8px; background: #f0f4ff;">
+                                <strong>Hình ảnh cho câu @(imgGroup.Value.start + 1) - @(imgGroup.Value.end + 1):</strong><br />
+                                <img src="@Url.Content(imgGroup.Value.imagePath)" alt="Reading Passage" style="max-width: 100%; margin: 10px 0;" />
+                            </div>
+                        </div>
+                    }
+
+                    @for (int j = 130; j < 146 && j < Model.Count; j++)
+                    {
+                        var quiz = Model[j];
+                        string imageGroup = "";
+                        // Tìm nhóm ảnh tương ứng dựa trên ImagePath và vị trí câu hỏi
+                        var imgPath = quiz?.ImagePath;
+                        if (!string.IsNullOrEmpty(imgPath))
+                        {
+                            foreach (var group in part6ImageGroups)
+                            {
+                                if (group.Value.imagePath == imgPath &&
+                                j >= group.Value.start && j <= group.Value.end)
+                                {
+                                    imageGroup = group.Key;
+                                    break;
+                                }
+                            }
+                        }
+
+                        <div class="question-item" data-question-index="@j" data-image-group="@imageGroup">
+                            <strong>@(j + 1). @quiz.Question</strong><br />
+                            @foreach (var option in new[] { "A", "B", "C", "D" })
+                            {
+                                <label class="option-label">
+                                    <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                    <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                </label>
+                            }
+                        </div>
+                    }
+
+                    <!-- Part 7: Reading Comprehension (54 câu) -->
+                    <h5>Part 7: Reading Comprehension (54 câu)</h5>
+
+                    @{
+                        // Tạo mapping cho các nhóm ảnh Part 7 dựa trên ImagePath giống nhau
+                        var part7ImageGroups = new Dictionary<string, (int start, int end, string imagePath)>();
+
+                        // Nhóm 147-163: Xác định các nhóm động dựa trên ImagePath giống nhau và liên tiếp
+                        string currentImagePath = null;
+                        int groupStart = -1;
+                        int groupCounter = 0;
+                        for (int j = 146; j < 163 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            string imgPath = quiz?.ImagePath;
+
+                            if (!string.IsNullOrEmpty(imgPath))
+                            {
+                                if (currentImagePath == null)
+                                {
+                                    // Bắt đầu nhóm mới
+                                    currentImagePath = imgPath;
+                                    groupStart = j;
+                                }
+                                else if (imgPath != currentImagePath)
+                                {
+                                    // Kết thúc nhóm trước và bắt đầu nhóm mới
+                                    if (groupStart >= 0)
+                                    {
+                                        string groupKey = $"part7-147-163-group{groupCounter}";
+                                        part7ImageGroups[groupKey] = (groupStart, j - 1, currentImagePath);
+                                        groupCounter++;
+                                    }
+                                    currentImagePath = imgPath;
+                                    groupStart = j;
+                                }
+                                // Nếu ImagePath giống nhau, tiếp tục nhóm hiện tại
+                            }
+                            else
+                            {
+                                // Nếu câu hỏi không có ImagePath, kết thúc nhóm hiện tại
+                                if (currentImagePath != null && groupStart >= 0)
+                                {
+                                    string groupKey = $"part7-147-163-group{groupCounter}";
+                                    part7ImageGroups[groupKey] = (groupStart, j - 1, currentImagePath);
+                                    groupCounter++;
+                                    currentImagePath = null;
+                                    groupStart = -1;
+                                }
+                            }
+                        }
+                        // Lưu nhóm cuối cùng nếu có
+                        if (currentImagePath != null && groupStart >= 0)
+                        {
+                            string groupKey = $"part7-147-163-group{groupCounter}";
+                            int endIdx = Math.Min(162, Model.Count - 1);
+                            part7ImageGroups[groupKey] = (groupStart, endIdx, currentImagePath);
+                        }
+
+                        // Nhóm 164-175: Xác định các nhóm dựa trên ImagePath giống nhau và liên tiếp (mỗi nhóm 4 câu)
+                        string currentImagePath164 = null;
+                        int groupStart164 = -1;
+                        int groupCounter164 = 0;
+                        for (int j = 163; j < 175 && j < Model.Count; j++)
+                        {
+                            var quiz = Model[j];
+                            string imgPath = quiz?.ImagePath;
+
+                            if (!string.IsNullOrEmpty(imgPath))
+                            {
+                                if (currentImagePath164 == null)
+                                {
+                                    // Bắt đầu nhóm mới
+                                    currentImagePath164 = imgPath;
+                                    groupStart164 = j;
+                                }
+                                else if (imgPath != currentImagePath164)
+                                {
+                                    // Kết thúc nhóm trước và bắt đầu nhóm mới
+                                    if (groupStart164 >= 0)
+                                    {
+                                        string groupKey = $"part7-164-175-group{groupCounter164}";
+                                        part7ImageGroups[groupKey] = (groupStart164, j - 1, currentImagePath164);
+                                        groupCounter164++;
+                                    }
+                                    currentImagePath164 = imgPath;
+                                    groupStart164 = j;
+                                }
+                                // Nếu ImagePath giống nhau, tiếp tục nhóm hiện tại
+                            }
+                            else
+                            {
+                                // Nếu câu hỏi không có ImagePath, kết thúc nhóm hiện tại
+                                if (currentImagePath164 != null && groupStart164 >= 0)
+                                {
+                                    string groupKey = $"part7-164-175-group{groupCounter164}";
+                                    part7ImageGroups[groupKey] = (groupStart164, j - 1, currentImagePath164);
+                                    groupCounter164++;
+                                    currentImagePath164 = null;
+                                    groupStart164 = -1;
+                                }
+                            }
+                        }
+                        // Lưu nhóm cuối cùng nếu có
+                        if (currentImagePath164 != null && groupStart164 >= 0)
+                        {
+                            string groupKey = $"part7-164-175-group{groupCounter164}";
+                            int endIdx = Math.Min(174, Model.Count - 1);
+                            part7ImageGroups[groupKey] = (groupStart164, endIdx, currentImagePath164);
+                        }
+
+                        // Nhóm 176-185: 2 hình, mỗi hình 5 câu
+                        for (int g = 0; g < 2; g++)
+                        {
+                            int startIdx = 175 + (g * 5);
+                            int endIdx = Math.Min(startIdx + 5, 185);
+                            if (startIdx < Model.Count)
+                            {
+                                var firstQuiz = Model.ElementAtOrDefault(startIdx);
+                                if (firstQuiz != null && !string.IsNullOrEmpty(firstQuiz.ImagePath))
+                                {
+                                    part7ImageGroups[$"part7-176-185-group{g}"] = (startIdx, endIdx - 1, firstQuiz.ImagePath);
+                                }
+                            }
+                        }
+
+                        // Nhóm 186-200: 3 hình, mỗi hình 5 câu
+                        for (int g = 0; g < 3; g++)
+                        {
+                            int startIdx = 185 + (g * 5);
+                            int endIdx = Math.Min(startIdx + 5, 200);
+                            if (startIdx < Model.Count)
+                            {
+                                var firstQuiz = Model.ElementAtOrDefault(startIdx);
+                                if (firstQuiz != null && !string.IsNullOrEmpty(firstQuiz.ImagePath))
+                                {
+                                    part7ImageGroups[$"part7-186-200-group{g}"] = (startIdx, endIdx - 1, firstQuiz.ImagePath);
+                                }
+                            }
+                        }
+                    }
+
+                    @foreach (var imgGroup in part7ImageGroups)
+                    {
+                        <div class="image-container" data-image-group="@imgGroup.Key" data-start-question="@imgGroup.Value.start" data-end-question="@imgGroup.Value.end">
+                            <div class="mb-3 p-3" style="border: 2px solid #28a745; border-radius: 8px; background: #f0fff4;">
+                                <strong>Hình ảnh cho câu @(imgGroup.Value.start + 1) - @(imgGroup.Value.end + 1):</strong><br />
+                                <img src="@Url.Content(imgGroup.Value.imagePath)" alt="Reading Passage" style="max-width: 100%; margin: 10px 0;" />
+                            </div>
+                        </div>
+                    }
+
+                    @for (int j = 146; j < 200 && j < Model.Count; j++)
+                    {
+                        var quiz = Model[j];
+                        string imageGroup = "";
+
+                        if (j >= 146 && j < 163)
+                        {
+                            // Tìm nhóm ảnh tương ứng cho câu 147-163
+                            var imgPath = quiz.ImagePath;
+                            if (!string.IsNullOrEmpty(imgPath))
+                            {
+                                // Tìm group key dựa trên ImagePath và vị trí câu hỏi
+                                foreach (var group in part7ImageGroups)
+                                {
+                                    if (group.Key.StartsWith("part7-147-163-group") &&
+                                    group.Value.imagePath == imgPath &&
+                                    j >= group.Value.start && j <= group.Value.end)
+                                    {
+                                        imageGroup = group.Key;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else if (j >= 163 && j < 175)
+                        {
+                            // Tìm nhóm ảnh tương ứng cho câu 164-175 dựa trên ImagePath
+                            var imgPath = quiz.ImagePath;
+                            if (!string.IsNullOrEmpty(imgPath))
+                            {
+                                foreach (var group in part7ImageGroups)
+                                {
+                                    if (group.Key.StartsWith("part7-164-175-group") &&
+                                    group.Value.imagePath == imgPath &&
+                                    j >= group.Value.start && j <= group.Value.end)
+                                    {
+                                        imageGroup = group.Key;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else if (j >= 175 && j < 185)
+                        {
+                            // Câu 176-185: 2 hình, mỗi hình 5 câu
+                            int groupNum = (j - 175) / 5;
+                            imageGroup = $"part7-176-185-group{groupNum}";
+                        }
+                        else if (j >= 185 && j < 200)
+                        {
+                            // Câu 186-200: 3 hình, mỗi hình 5 câu
+                            int groupNum = (j - 185) / 5;
+                            imageGroup = $"part7-186-200-group{groupNum}";
+                        }
+
+                        <div class="question-item" data-question-index="@j" data-image-group="@imageGroup">
+                            <strong>@(j + 1). @quiz.Question</strong><br />
+                            @foreach (var option in new[] { "A", "B", "C", "D" })
+                            {
+                                <label class="option-label">
+                                    <input type="radio" name="userAnswers[@quiz.QuizId]" value="@option" onchange="updateAnswer(@j, this)" required />
+                                    <strong>@option.</strong> @quiz.GetType().GetProperty($"Option{option}").GetValue(quiz)
+                                </label>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-prev" id="prevBtn" onclick="prevQuestion()">Câu trước</button>
+                    <button type="button" class="btn btn-next" id="nextBtn" onclick="nextQuestion()">Câu tiếp theo</button>
+                </div>
+                <button type="button" class="btn btn-submit mobile-submit-btn" onclick="submitQuiz()">Nộp bài</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let time = @(timerDuration);
+        const timer = document.getElementById('timer');
+        const progressBar = document.getElementById('progressBar');
+        const questions = document.querySelectorAll('.question-item');
+        const grid = document.getElementById('questionGrid');
+        const totalQuestions = questions.length;
+        let currentQuestion = 0;
+        let answers = new Array(totalQuestions).fill(null);
+
+        const lessonId = "@ViewBag.LessonId";
+        const keyAnswers = `quizAnswers_${lessonId}`;
+        const keyTime = `quizTimeLeft_${lessonId}`;
+
+        // Tạo lưới số câu
+        for (let i = 0; i < totalQuestions; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'q-number';
+            btn.textContent = i + 1;
+            btn.onclick = () => showQuestion(i);
+            grid.appendChild(btn);
+        }
+        const qNumbers = document.querySelectorAll('.q-number');
+
+        function showQuestion(index) {
+            // Ẩn tất cả câu hỏi và ảnh
+            questions.forEach(q => q.style.display = 'none');
+            document.querySelectorAll('.image-container').forEach(img => {
+                img.classList.remove('show');
+                img.style.display = 'none';
+            });
+
+            // Lấy câu hỏi hiện tại
+            const currentQ = questions[index];
+            if (!currentQ) return;
+
+            const imageGroup = currentQ.getAttribute('data-image-group');
+            let questionsToShow = [index]; // Mặc định chỉ hiển thị câu hiện tại
+            let groupStartIndex = index;
+            let groupEndIndex = index;
+
+            // Nếu câu hỏi có imageGroup (Part 6, Part 7), hiển thị tất cả câu trong nhóm
+            if (imageGroup && imageGroup.trim() !== '') {
+                // Tìm tất cả câu hỏi có cùng imageGroup
+                questionsToShow = [];
+                questions.forEach((q, i) => {
+                    if (q.getAttribute('data-image-group') === imageGroup) {
+                        questionsToShow.push(i);
+                    }
+                });
+
+                // Sắp xếp để đảm bảo thứ tự đúng
+                questionsToShow.sort((a, b) => a - b);
+                groupStartIndex = questionsToShow[0];
+                groupEndIndex = questionsToShow[questionsToShow.length - 1];
+
+                // Hiển thị ảnh
+                const imageContainer = document.querySelector(`.image-container[data-image-group="${imageGroup}"]`);
+                if (imageContainer) {
+                    imageContainer.classList.add('show');
+                    imageContainer.style.display = 'block';
+
+                    // Di chuyển ảnh lên trước câu hỏi đầu tiên trong nhóm
+                    const questionsContainer = document.getElementById('questionsContainer');
+                    const firstQuestion = questions[groupStartIndex];
+                    if (questionsContainer && firstQuestion && firstQuestion.parentNode === questionsContainer) {
+                        try {
+                            questionsContainer.insertBefore(imageContainer, firstQuestion);
+                        } catch (e) {
+                            console.log('Could not move image container:', e);
+                        }
+                    }
+                }
+
+                // Hiển thị tất cả câu hỏi trong nhóm
+                questionsToShow.forEach(i => {
+                    questions[i].style.display = 'block';
+                });
+            } else {
+                // Không có imageGroup, chỉ hiển thị câu hiện tại
+                currentQ.style.display = 'block';
+            }
+
+            // Cập nhật highlight cho các số câu
+            qNumbers.forEach((n, i) => {
+                n.classList.remove('current');
+                n.classList.remove('unanswered');
+
+                // Tô xanh dương cho tất cả câu trong nhóm đang hiển thị
+                if (questionsToShow.includes(i)) {
+                    n.classList.add('current');
+                }
+            });
+
+            currentQuestion = index;
+            updateProgress();
+            updateNextButton();
+
+            // Di chuyển nút điều hướng xuống sau câu hỏi cuối cùng trong nhóm
+            const btnGroup = document.querySelector('.btn-group');
+            const lastQuestion = questions[groupEndIndex];
+            if (lastQuestion) {
+                lastQuestion.after(btnGroup);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion >= totalQuestions - 1) return;
+
+            // Tìm nhóm tiếp theo
+            const currentQ = questions[currentQuestion];
+            const currentImageGroup = currentQ ? currentQ.getAttribute('data-image-group') : null;
+
+            if (currentImageGroup && currentImageGroup.trim() !== '') {
+                // Tìm câu cuối cùng trong nhóm hiện tại
+                let lastInGroup = currentQuestion;
+                for (let i = currentQuestion + 1; i < totalQuestions; i++) {
+                    if (questions[i].getAttribute('data-image-group') === currentImageGroup) {
+                        lastInGroup = i;
+                    } else {
+                        break;
+                    }
+                }
+                // Nhảy đến câu đầu tiên của nhóm tiếp theo
+                if (lastInGroup < totalQuestions - 1) {
+                    showQuestion(lastInGroup + 1);
+                }
+            } else {
+                // Không có nhóm, nhảy câu tiếp theo
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion <= 0) return;
+
+            // Tìm nhóm trước đó
+            const prevQ = questions[currentQuestion - 1];
+            const prevImageGroup = prevQ ? prevQ.getAttribute('data-image-group') : null;
+
+            if (prevImageGroup && prevImageGroup.trim() !== '') {
+                // Tìm câu đầu tiên trong nhóm trước
+                let firstInGroup = currentQuestion - 1;
+                for (let i = currentQuestion - 2; i >= 0; i--) {
+                    if (questions[i].getAttribute('data-image-group') === prevImageGroup) {
+                        firstInGroup = i;
+                    } else {
+                        break;
+                    }
+                }
+                showQuestion(firstInGroup);
+            } else {
+                // Không có nhóm, nhảy câu trước
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function updateAnswer(qIndex, radio) {
+            answers[qIndex] = radio.value;
+            qNumbers[qIndex].classList.add('answered');
+            updateProgress();
+            updateNextButton();
+            localStorage.setItem(keyAnswers, JSON.stringify(answers));
+        }
+
+        function updateProgress() {
+            const answeredCount = answers.filter(a => a !== null).length;
+            progressBar.style.width = `${(answeredCount / totalQuestions) * 100}%`;
+        }
+
+        function updateNextButton() {
+            document.getElementById('prevBtn').disabled = (currentQuestion === 0);
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.disabled = currentQuestion >= totalQuestions - 1;
+            nextBtn.textContent = currentQuestion >= totalQuestions - 1 ? "Câu cuối" : "Câu tiếp theo";
+        }
+
+        // Đếm ngược
+        setInterval(() => {
+            if (time > 0) {
+                time--;
+                const m = Math.floor(time / 60), s = time % 60;
+                timer.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                localStorage.setItem(keyTime, time);
+            } else {
+                document.getElementById("quizForm").submit();
+            }
+        }, 1000);
+
+        // Khôi phục
+        window.addEventListener('load', () => {
+            const savedAnswers = JSON.parse(localStorage.getItem(keyAnswers));
+            const savedTime = localStorage.getItem(keyTime);
+
+            if (savedAnswers && savedAnswers.length === totalQuestions) {
+                answers = savedAnswers;
+                answers.forEach((ans, i) => {
+                    if (ans) {
+                        const radios = questions[i].querySelectorAll('input[type="radio"]');
+                        radios.forEach(r => { if (r.value === ans) r.checked = true; });
+                        qNumbers[i].classList.add('answered');
+                    }
+                });
+            }
+            if (savedTime) time = parseInt(savedTime);
+            showQuestion(0);
+        });
+
+        function submitQuiz() {
+            const answeredCount = answers.filter(a => a !== null).length;
+
+            if (answeredCount < totalQuestions) {
+                const missing = totalQuestions - answeredCount;
+                const warning = document.getElementById('submitWarning');
+                document.getElementById('missingCount').textContent = `Còn thiếu ${missing}`;
+                warning.classList.remove('d-none');
+
+                qNumbers.forEach((num, i) => {
+                    if (answers[i] === null) {
+                        num.classList.add('unanswered');
+                    } else {
+                        num.classList.remove('unanswered');
+                    }
+                });
+
+                warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith("quiz")) localStorage.removeItem(key);
+            });
+            document.getElementById("quizForm").submit();
+        }
+    </script>
+}
+

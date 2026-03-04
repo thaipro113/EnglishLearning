@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EnglishLearning.Models;
 using Microsoft.EntityFrameworkCore;
+using EnglishLearning.Areas.Admin.Attributes;
 
 namespace EnglishLearning.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [AdminAuthorize]
     public class HomeController : Controller
     {
         private readonly EnglishLearningDbContext _context;

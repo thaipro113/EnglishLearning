@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using EnglishLearning.Areas.Admin.Attributes;
 
 namespace EnglishLearning.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [AdminAuthorize]
     public class ProgressController : Controller
     {
         private readonly EnglishLearningDbContext _context;

@@ -5,10 +5,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using EnglishLearning.Areas.Admin.Attributes;
 
 namespace EnglishLearning.Controllers.Admin
 {
     [Area("Admin")]
+    [AdminAuthorize]
     public class CourseController : Controller
     {
         private readonly EnglishLearningDbContext _context;

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Đăng nhập";
     Layout = "~/Views/Shared/TopFoot.cshtml";
 }
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
     <div class="card glass-effect rounded-4 p-5 shadow card-hover" style="max-width: 500px; width: 100%;">
         <h3 class="card-title text-center mb-4 fs-3 fw-bold text-dark">Đăng nhập</h3>
@@ -25,7 +25,7 @@
                 <label for="password" class="form-label fs-6 text-dark fw-medium">Mật khẩu</label>
                 <div class="position-relative">
                     <input type="password" name="password" id="password" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Nhập mật khẩu" required />
-                    <button style="border:none;background-color:transparent;" type="button" onclick="togglePassword('password')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors">👁️</button>
+                    <button style="border:none;background-color:transparent;" type="button" onclick="togglePassword('password')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors"><i class="fa-solid fa-eye"></i></button>
                 </div>
             </div>
             <div class="col-12">
@@ -56,10 +56,10 @@
             const button = input.nextElementSibling;
             if (input.type === 'password') {
                 input.type = 'text';
-                button.textContent = '🙈';
+                button.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
             } else {
                 input.type = 'password';
-                button.textContent = '👁️';
+                button.innerHTML = '<i class="fa-solid fa-eye"></i>';
             }
         }
 

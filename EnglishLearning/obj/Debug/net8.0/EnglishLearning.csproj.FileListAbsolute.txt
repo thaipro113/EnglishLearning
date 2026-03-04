@@ -275,13 +275,9 @@ C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\Eng
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\EnglishLearning.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\EnglishLearning.RazorAssemblyInfo.cache
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\EnglishLearning.RazorAssemblyInfo.cs
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\EnglishLearning.sourcelink.json
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets\msbuild.EnglishLearning.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets\msbuild.build.EnglishLearning.props
-C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.EnglishLearning.props
-C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.EnglishLearning.props
-C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\scopedcss\Areas\Admin\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\scopedcss\bundle\EnglishLearning.styles.css
@@ -292,4 +288,11 @@ C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\ref
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\EnglishLearning.pdb
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\EnglishLearning.genruntimeconfig.cache
 C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\ref\EnglishLearning.dll
-C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\EnglishLearning.sourcelink.json
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\bin\Debug\net8.0\EnglishLearning.staticwebassets.endpoints.json
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\Thái\source\repos\EnglishLearning\EnglishLearning\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

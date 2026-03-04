@@ -10,6 +10,11 @@ namespace EnglishLearning
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            // 🟢 Bật upload lớn cho Kestrel (200MB)
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 209_715_200; // 200MB
+            });
 
             // Add services to the container.
             builder.Services.AddDbContext<EnglishLearningDbContext>(options =>
@@ -27,16 +32,25 @@ namespace EnglishLearning
                 options.MultipartHeadersLengthLimit = int.MaxValue;
             });
 
-            // ✅ Thêm cấu hình Authentication
+            // ✅ Thêm cấu hình Authentication với 2 schemes riêng biệt
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = "Google"; // dùng Google khi cần challenge
             })
-            .AddCookie(options =>
+            // Cookie cho User (trang chính)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/AccessDenied";
+                options.Cookie.Name = "UserAuth";
+            })
+            // Cookie riêng cho Admin
+            .AddCookie("AdminScheme", options =>
+            {
+                options.LoginPath = "/Admin/Auth/Login";
+                options.AccessDeniedPath = "/Admin/Auth/AccessDenied";
+                options.Cookie.Name = "AdminAuth";
             })
             .AddGoogle("Google", options =>
             {
@@ -46,7 +60,13 @@ namespace EnglishLearning
             {
                 options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
                 options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-            }); ;
+                options.Events.OnRemoteFailure = context =>
+                {
+                    context.Response.Redirect("/Account/Login");
+                    context.HandleResponse();
+                    return Task.CompletedTask;
+                };
+            });
 
 
 

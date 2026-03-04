@@ -58,6 +58,13 @@ namespace EnglishLearning.Controllers
             ViewBag.CourseId = lesson.CourseId;
             ViewBag.LessonType = lesson.LessonType;
             ViewBag.AudioPath = lesson?.AudioPath;
+
+            // Nếu là TOEIC thì dùng view riêng
+            if (lesson.LessonType == "TOEIC")
+            {
+                return View("DoTestToeic", quizzes);
+            }
+
             return View("DoTest", quizzes); // Chỉ định rõ tên view
         }
 

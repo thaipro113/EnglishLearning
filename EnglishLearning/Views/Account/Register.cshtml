@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/TopFoot.cshtml";
 }
 <link href="~/css/register.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
     <div class="card glass-effect rounded-4 p-5 shadow" style="max-width: 500px; width: 100%;">
         <h3 class="card-title text-center mb-4 fs-3 fw-bold text-dark">Đăng ký tài khoản</h3>
@@ -37,18 +38,36 @@
                 <label asp-for="Password" class="form-label fs-6 text-dark fw-medium">Mật khẩu</label>
                 <div class="position-relative">
                     <input asp-for="Password" type="password" id="registerPassword" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Tạo mật khẩu mạnh" required />
-                    <button style="border:none;background-color: transparent;" type="button" onclick="togglePassword('registerPassword')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors">👁️</button>
-                </div>
-                <div class="text-muted small mt-2">
-                    Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số
+                    <button style="border:none;background-color: transparent;" type="button" onclick="togglePassword('registerPassword')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+
+                <!-- Phần kiểm tra yêu cầu mật khẩu mới thêm -->
+                <div class="mt-3">
+                    <small class="d-block mb-1 text-muted">Mật khẩu cần đáp ứng:</small>
+                    <div class="d-flex align-items-center mb-1 text-sm" id="length-check">
+                        <i class="fa-solid fa-circle text-secondary me-2" style="font-size:6px;"></i>
+                        <span class="text-secondary">Ít nhất 8 ký tự</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-1 text-sm" id="uppercase-check">
+                        <i class="fa-solid fa-circle text-secondary me-2" style="font-size:6px;"></i>
+                        <span class="text-secondary">Có chữ hoa (A-Z)</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-1 text-sm" id="lowercase-check">
+                        <i class="fa-solid fa-circle text-secondary me-2" style="font-size:6px;"></i>
+                        <span class="text-secondary">Có chữ thường (a-z)</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-1 text-sm" id="number-check">
+                        <i class="fa-solid fa-circle text-secondary me-2" style="font-size:6px;"></i>
+                        <span class="text-secondary">Có số (0-9)</span>
+                    </div>
+                </div>
             </div>
             <div class="col-12">
                 <label asp-for="ConfirmPassword" class="form-label fs-6 text-dark fw-medium">Xác nhận mật khẩu</label>
                 <div class="position-relative">
                     <input asp-for="ConfirmPassword" type="password" id="confirmPassword" class="form-control rounded-pill input-glow py-3 fs-6" placeholder="Nhập lại mật khẩu" required />
-                    <button style="border:none;background-color: transparent;" type="button" onclick="togglePassword('confirmPassword')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors">👁️</button>
+                    <button style="border:none;background-color: transparent;" type="button" onclick="togglePassword('confirmPassword')" class="position-absolute end-0 top-50 translate-middle-y me-3 text-muted hover-text-dark transition-colors"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
             </div>
@@ -80,10 +99,10 @@
             const button = input.nextElementSibling;
             if (input.type === 'password') {
                 input.type = 'text';
-                button.textContent = '🙈';
+                button.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
             } else {
                 input.type = 'password';
-                button.textContent = '👁️';
+                button.innerHTML = '<i class="fa-solid fa-eye"></i>';
             }
         }
 
@@ -111,6 +130,52 @@
                 setTimeout(() => ripple.remove(), 600);
             });
         });
+            // Hàm kiểm tra và cập nhật trạng thái các yêu cầu mật khẩu
+            function checkPasswordRequirements() {
+                const password = document.getElementById('registerPassword').value;
+
+                // Ít nhất 8 ký tự
+                const lengthOk = password.length >= 8;
+                updateCheck('length-check', lengthOk);
+
+                // Có chữ hoa
+                const uppercaseOk = /[A-Z]/.test(password);
+                updateCheck('uppercase-check', uppercaseOk);
+
+                // Có chữ thường
+                const lowercaseOk = /[a-z]/.test(password);
+                updateCheck('lowercase-check', lowercaseOk);
+
+                // Có số
+                const numberOk = /[0-9]/.test(password);
+                updateCheck('number-check', numberOk);
+            }
+
+            function updateCheck(elementId, isValid) {
+                const container = document.getElementById(elementId);
+                const icon = container.querySelector('i');
+                const text = container.querySelector('span');
+
+                if (isValid) {
+                    icon.classList.remove('text-secondary');
+                    icon.classList.add('text-success');
+                    icon.classList.replace('fa-circle', 'fa-check-circle');
+                    text.classList.remove('text-secondary');
+                    text.classList.add('text-success');
+                } else {
+                    icon.classList.remove('text-success');
+                    icon.classList.add('text-secondary');
+                    icon.classList.replace('fa-check-circle', 'fa-circle');
+                    text.classList.remove('text-success');
+                    text.classList.add('text-secondary');
+                }
+            }
+
+            // Gọi hàm kiểm tra mỗi khi người dùng gõ vào ô mật khẩu
+            document.getElementById('registerPassword').addEventListener('input', checkPasswordRequirements);
+
+            // Kiểm tra lần đầu khi trang load (nếu có giá trị cũ)
+            document.addEventListener('DOMContentLoaded', checkPasswordRequirements);
     </script>
    
 }

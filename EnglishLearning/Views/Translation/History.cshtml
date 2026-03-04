@@ -31,7 +31,7 @@
                         @* Sắp xếp theo ParagraphId và Timestamp để giữ thứ tự câu trong mỗi đoạn văn *@
                         @foreach (var item in Model.OrderBy(x => x.Timestamp))
                         {
-                            <tr class="animate__animated animate__fadeInUp">
+                            <tr>
                                 <td>
                                     @* Tính chỉ số câu dựa trên thứ tự trong ParagraphId, giả sử mỗi ParagraphId đại diện một đoạn văn *@
                                     @((Model.Where(x => x.ParagraphId == item.ParagraphId).OrderBy(x => x.Timestamp).ToList().IndexOf(item) + 1).ToString())
@@ -42,16 +42,18 @@
                                 <td>@item.UserTranslation</td>
                                 <td>@item.StandardTranslation</td>
                                 <td>
-                                    <div class="progress" style="height: 25px;">
-                                        <div class="progress-bar bg-gradient-success animate__animated animate__slideInLeft" role="progressbar" style="width: @item.Accuracy%;
-                                        color: black;
-                                        font-size: 1rem;
-                                        line-height: 35px;
-                                        padding: 0 10px;
-                                        transition: width 0.6s ease;
-                                            " aria-valuenow="@item.Accuracy" aria-valuemin="0" aria-valuemax="100">
-                                            @item.Accuracy%
+                                    <div class="progress position-relative" style="height: 25px;">
+                                        <div class="progress-bar bg-gradient-success"
+                                             role="progressbar"
+                                             style="width: @item.Accuracy%;"
+                                             aria-valuenow="@item.Accuracy"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
                                         </div>
+
+                                        <span class="progress-text">
+                                            @item.Accuracy%
+                                        </span>
                                     </div>
                                 </td>
                                 <td>@item.ErrorSuggestion</td>

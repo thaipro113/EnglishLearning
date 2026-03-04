@@ -1,0 +1,35 @@
+@model IEnumerable<EnglishLearning.Models.FlashcardSet>
+
+@{
+    ViewData["Title"] = "Flashcards";
+    Layout = "~/Views/Shared/TopFoot.cshtml";
+}
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="section-title position-relative mb-4">
+            <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Học tập</h6>
+            <h1 class="display-4">Thẻ Ghi Nhớ (Flashcards)</h1>
+        </div>
+
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="bg-light p-4 rounded shadow-sm h-100 position-relative link-hover-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0 text-primary">@item.Title</h4>
+                            <span class="badge bg-secondary text-white">@item.Flashcards.Count thẻ</span>
+                        </div>
+                        <p class="text-muted">@item.Description</p>
+                        <div class="mt-4">
+                           <a asp-action="Study" asp-route-id="@item.FlashcardSetId" class="btn btn-primary btn-block">
+                                <i class="fas fa-play mr-2"></i> Bắt đầu học
+                           </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
