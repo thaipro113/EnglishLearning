@@ -1,0 +1,9 @@
+services:
+  englishlearning:
+    image: englishlearning
+    build:
+      context: .
+      dockerfile: EnglishLearning/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
