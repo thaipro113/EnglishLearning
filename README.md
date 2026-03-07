@@ -100,9 +100,9 @@ Nếu bạn muốn chạy dự án thông qua Docker để đảm bảo môi tr�
    ```
    Sau khi build xong, khởi chạy container:
    ```bash
-   docker run -d -p 8080:80 --name el-app englishlearning-app
+   docker run -d -p 5000:5000 -p 5001:5001 --name el-app englishlearning-app
    ```
-   Truy cập ứng dụng trên trình duyệt tại: `http://localhost:8080`.
+   Truy cập ứng dụng trên trình duyệt tại: `http://localhost:5000` hoặc `https://localhost:5001`.
 
 3. **Sử dụng Docker Compose (Khuyên dùng)**:
    Nếu dự án đi kèm file `docker-compose.yml` (để tự động liên kết ứng dụng và CSDL SQL Server trong container), bạn chỉ cần mở terminal ở thư mục gốc và chạy lệnh:
