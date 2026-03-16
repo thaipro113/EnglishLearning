@@ -1,6 +1,5 @@
 using EnglishLearning.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,16 +23,6 @@ namespace EnglishLearning
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
             builder.Services.AddHttpClient();
-            
-            // ✅ Persist Data Protection keys to a local folder to avoid "key not found" errors
-            builder.Services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "DataProtectionKeys")));
-            
-            // ✅ Fix lỗi Antiforgery Token bằng cách ép sử dụng Cookie mới
-            builder.Services.AddAntiforgery(options =>
-            {
-                options.Cookie.Name = ".EnglishLearning.Antiforgery";
-            });
             // ✅ Cấu hình giới hạn upload (200MB)
             builder.Services.Configure<FormOptions>(options =>
             {
@@ -84,13 +73,6 @@ namespace EnglishLearning
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
-
-            //// ✅ Auto-migrate database on startup (safe - only applies pending migrations)
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var db = scope.ServiceProvider.GetRequiredService<EnglishLearningDbContext>();
-            //    db.Database.Migrate();
-            //}
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

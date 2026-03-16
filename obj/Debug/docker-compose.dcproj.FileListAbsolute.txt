@@ -39,3 +39,4 @@ C:\Users\Thái\source\repos\EnglishLearning\bin\Debug\EnglishLearning.pdb
 C:\Users\Thái\source\repos\EnglishLearning\obj\Debug\docker-compose.dcproj.AssemblyReference.cache
 C:\Users\Thái\source\repos\EnglishLearning\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
 C:\Users\Thái\source\repos\EnglishLearning\obj\Debug\docker-c.35A3FFBA.Up2Date
+C:\Users\Thái\source\repos\EnglishLearning\bin\Debug\appsettings.json

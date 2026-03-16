@@ -30,6 +30,12 @@ namespace EnglishLearning.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if (!optionsBuilder.IsConfigured)
+            {
+#pragma warning disable CS8604 // Possible null reference argument.
+                optionsBuilder.UseSqlServer("Data Source=thaipro113\\SQLEXPRESS;Initial Catalog=EnglishLearningDB;Integrated Security=True;Trust Server Certificate=True");
+#pragma warning restore CS8604 // Possible null reference argument.
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

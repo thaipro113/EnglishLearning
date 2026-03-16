@@ -25,10 +25,10 @@
             <div class="option-grid" id="levelOptions">
                 @foreach (var level in ViewBag.Levels as Dictionary<string, string>)
                 {
-                    // Tách chuỗi tiếng Việt tại dấu "("
+                   
                     string[] parts = level.Value.Split(new char[] { '(' }, 2);
-                    string mainText = parts[0].Trim(); // "Mới bắt đầu"
-                    string subText = "(" + parts[1].Trim(); // "(Tôi không biết gì...)"
+                    string mainText = parts[0].Trim(); 
+                    string subText = "(" + parts[1].Trim(); 
 
                     <div class="option-item" data-value="@level.Key" role="button" tabindex="0" type="button">
                         <p class="option-main-label">@mainText</p>

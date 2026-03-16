@@ -11,6 +11,10 @@ services:
         com.microsoft.created-by: visual-studio
         com.microsoft.visual-studio.project-name: EnglishLearning
       target: base
+    depends_on:
+      sqlserver:
+        condition: service_started
+        required: true
     entrypoint:
       - dotnet
       - --roll-forward
@@ -19,9 +23,10 @@ services:
       - --wait
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_HTTP_PORTS: "8080"
-      ASPNETCORE_HTTPS_PORTS: "8081"
+      ASPNETCORE_HTTP_PORTS: "5000"
+      ASPNETCORE_HTTPS_PORTS: "5001"
       ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=EnglishLearningDB;User Id=sa;Password=StrongPwd123!;TrustServerCertificate=True
       DOTNET_USE_POLLING_FILE_WATCHER: "1"
       NUGET_FALLBACK_PACKAGES: /.nuget/fallbackpackages
     image: englishlearning:dev
@@ -34,10 +39,12 @@ services:
       default: null
     ports:
       - mode: ingress
-        target: 8080
+        target: 5000
+        published: "5000"
         protocol: tcp
       - mode: ingress
-        target: 8081
+        target: 5001
+        published: "5001"
         protocol: tcp
     tty: true
     volumes:
@@ -93,6 +100,27 @@ services:
         target: /HotReloadAgent
         read_only: true
         bind: {}
+  sqlserver:
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: StrongPwd123!
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 1433
+        published: "1433"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: sqlserverdata
+        target: /var/opt/mssql
+        volume: {}
 networks:
   default:
     name: dockercompose9410779286345802849_default
+volumes:
+  sqlserverdata:
+    name: dockercompose9410779286345802849_sqlserverdata

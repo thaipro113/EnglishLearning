@@ -85,13 +85,6 @@ namespace EnglishLearning
 
             var app = builder.Build();
 
-            //// ✅ Auto-migrate database on startup (safe - only applies pending migrations)
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var db = scope.ServiceProvider.GetRequiredService<EnglishLearningDbContext>();
-            //    db.Database.Migrate();
-            //}
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

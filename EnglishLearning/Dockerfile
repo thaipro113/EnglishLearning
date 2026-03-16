@@ -27,4 +27,13 @@ RUN dotnet publish "./EnglishLearning.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Copy migration script
+COPY --from=publish /src/EnglishLearning/Migrations ./Migrations
+
+# Create entrypoint script to run migrations before starting app
+RUN echo '#!/bin/bash\n\
+dotnet EnglishLearning.dll --migrate\n\
+dotnet EnglishLearning.dll' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
 ENTRYPOINT ["dotnet", "EnglishLearning.dll"]

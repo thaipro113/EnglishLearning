@@ -4,7 +4,11 @@
     margin: 0;
     padding: 0;
 }
-
+.option-disabled {
+    opacity: 0.4; /* làm mờ */
+    pointer-events: none; /* chặn click */
+    cursor: not-allowed;
+}
 .step-card {
     max-width: 700px;
     margin: 50px auto;
