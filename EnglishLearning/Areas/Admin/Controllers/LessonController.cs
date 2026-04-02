@@ -1,4 +1,4 @@
-﻿using EnglishLearning.Models;
+using EnglishLearning.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -147,7 +147,7 @@ namespace EnglishLearning.Controllers.Admin
                 // Xử lý file audio nếu có
                 if (AudioFile != null && AudioFile.Length > 0)
                 {
-                    var audioDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/audio");
+                    var audioDir = Path.Combine(Directory.GetCurrentDirectory(), "Storage/uploads/audio");
                     if (!Directory.Exists(audioDir))
                         Directory.CreateDirectory(audioDir);
 
@@ -168,7 +168,7 @@ namespace EnglishLearning.Controllers.Admin
                 await _context.SaveChangesAsync();
 
                 // Xử lý hình ảnh nhóm cho Part 6 và Part 7
-                var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/images");
+                var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "Storage/uploads/images");
                 if (!Directory.Exists(imgDir))
                     Directory.CreateDirectory(imgDir);
 
@@ -403,7 +403,7 @@ namespace EnglishLearning.Controllers.Admin
                 // Xóa file audio cũ nếu có
                 if (!string.IsNullOrEmpty(existingLesson.AudioPath))
                 {
-                    var oldAudio = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingLesson.AudioPath.TrimStart('/'));
+                    var oldAudio = Path.Combine(Directory.GetCurrentDirectory(), "Storage", existingLesson.AudioPath.TrimStart('/'));
                     if (System.IO.File.Exists(oldAudio))
                     {
                         System.IO.File.Delete(oldAudio);
@@ -411,7 +411,7 @@ namespace EnglishLearning.Controllers.Admin
                     }
                 }
 
-                var audioDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/audio");
+                var audioDir = Path.Combine(Directory.GetCurrentDirectory(), "Storage/uploads/audio");
                 if (!Directory.Exists(audioDir)) Directory.CreateDirectory(audioDir);
 
                 var audioName = Guid.NewGuid() + Path.GetExtension(AudioFile.FileName);
@@ -433,7 +433,7 @@ namespace EnglishLearning.Controllers.Admin
             var groupImagePaths = new Dictionary<string, string>();
             if (existingLesson.LessonType == "TOEIC")
             {
-                var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/images");
+                var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "Storage/uploads/images");
                 if (!Directory.Exists(imgDir)) Directory.CreateDirectory(imgDir);
 
                 // Part 6: 4 nhóm
@@ -536,7 +536,7 @@ namespace EnglishLearning.Controllers.Admin
                             // Xóa ảnh nếu có
                             if (!string.IsNullOrEmpty(quizToDelete.ImagePath))
                             {
-                                var oldImg = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", quizToDelete.ImagePath.TrimStart('/'));
+                                var oldImg = Path.Combine(Directory.GetCurrentDirectory(), "Storage", quizToDelete.ImagePath.TrimStart('/'));
                                 if (System.IO.File.Exists(oldImg))
                                 {
                                     System.IO.File.Delete(oldImg);
@@ -575,7 +575,7 @@ namespace EnglishLearning.Controllers.Admin
                                 else if (quiz.ImageFile != null && quiz.ImageFile.Length > 0)
                                 {
                                     // Tạo thư mục nếu chưa có
-                                    var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/images");
+                                    var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "Storage/uploads/images");
                                     if (!Directory.Exists(imgDir)) Directory.CreateDirectory(imgDir);
 
                                     // Lưu file mới
@@ -609,7 +609,7 @@ namespace EnglishLearning.Controllers.Admin
                                         {
                                             try 
                                             {
-                                                var oldImg = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingQuiz.ImagePath.TrimStart('/'));
+                                                var oldImg = Path.Combine(Directory.GetCurrentDirectory(), "Storage", existingQuiz.ImagePath.TrimStart('/'));
                                                 // CHÚ Ý: Logic xóa file này có thể rủi ro nếu nhiều câu dùng chung 1 file ảnh cũ.
                                                 // Khi loop duyệt qua câu đầu tiên của nhóm, nó xóa ảnh cũ.
                                                 // Các câu sau vẫn trỏ tới ảnh cũ đó (trong DB) nhưng file đã mất? Không sao, vì chúng sẽ được update sang ảnh mới ngay lập tức.
@@ -649,7 +649,7 @@ namespace EnglishLearning.Controllers.Admin
                             }
                             else if (quiz.ImageFile != null && quiz.ImageFile.Length > 0)
                             {
-                                var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/images");
+                                var imgDir = Path.Combine(Directory.GetCurrentDirectory(), "Storage/uploads/images");
                                 if (!Directory.Exists(imgDir)) Directory.CreateDirectory(imgDir);
 
                                 var imgName = Guid.NewGuid() + Path.GetExtension(quiz.ImageFile.FileName);
@@ -701,14 +701,14 @@ namespace EnglishLearning.Controllers.Admin
             {
                 if (!string.IsNullOrEmpty(lesson.AudioPath))
                 {
-                    var audioPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", lesson.AudioPath.TrimStart('/'));
+                    var audioPath = Path.Combine(Directory.GetCurrentDirectory(), "Storage", lesson.AudioPath.TrimStart('/'));
                     if (System.IO.File.Exists(audioPath))
                         System.IO.File.Delete(audioPath);
                 }
 
                 if (!string.IsNullOrEmpty(lesson.VideoUrl))
                 {
-                    var videoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", lesson.VideoUrl.TrimStart('/'));
+                    var videoPath = Path.Combine(Directory.GetCurrentDirectory(), "Storage", lesson.VideoUrl.TrimStart('/'));
                     if (System.IO.File.Exists(videoPath))
                         System.IO.File.Delete(videoPath);
                 }
@@ -717,7 +717,7 @@ namespace EnglishLearning.Controllers.Admin
                 {
                     if (!string.IsNullOrEmpty(quiz.ImagePath))
                     {
-                        var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", quiz.ImagePath.TrimStart('/'));
+                        var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "Storage", quiz.ImagePath.TrimStart('/'));
                         if (System.IO.File.Exists(imgPath))
                             System.IO.File.Delete(imgPath);
                     }

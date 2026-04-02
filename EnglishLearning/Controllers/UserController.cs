@@ -1,4 +1,4 @@
-﻿using EnglishLearning.Models;
+using EnglishLearning.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
@@ -67,7 +67,7 @@ namespace EnglishLearning.Controllers
             // Xử lý ảnh
             if (ImageFile != null && ImageFile.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Storage/uploads");
                 if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
                 var fileName = $"{Guid.NewGuid()}{Path.GetExtension(ImageFile.FileName)}";
